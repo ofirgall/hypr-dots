@@ -1,0 +1,148 @@
+\nThese Dotfiles are only supported on Hyprland v0.50 or greater. Do not install on older versions of Hyprland.\n
+[ACTION] Do you want to continue anyway? (y/N): y
+[NOTE] Proceeding on Ubuntu/Debian by user confirmation.
+
+
+    ╦╔═┌─┐┌─┐╦    ╔╦╗┌─┐┌┬┐┌─┐
+    ╠╩╗│ ││ │║     ║║│ │ │ └─┐ 2025
+    ╩ ╩└─┘└─┘╩═╝  ═╩╝└─┘ ┴ └─┘
+
+
+A T T E N T I O N !
+Kindly visit KooL Hyprland Own Wiki for changelogs
+
+pcilib: Error reading /sys/bus/pci/devices/0000:00:08.3/label: Operation not permitted
+[INFO] Bibata-Hyprcursor directory detected. Activating Hyprcursor....
+
+[NOTE] Detecting keyboard layout to prepare proper Hyprland Settings
+[INFO] Current keyboard layout is us
+[ACTION] Is this correct? [y/n] y
+[NOTE] kb_layout us configured in settings.
+
+[INFO] neovim is detected as installed
+[ACTION] Do you want to make neovim the default editor? (y/N): n
+
+[INFO] vim is detected as installed
+[ACTION] Do you want to make vim the default editor? (y/N): n
+
+[NOTE]  By default, KooL's Dots are configured for 1440p or 2k.
+[WARN] If you dont select proper resolution, Hyprlock will look FUNKY!
+[INFO] If you are not sure what is your resolution, choose 1 here!
+Select monitor resolution to properly configure appearance and fonts:
+  -- Enter 1. for monitor resolution less than 1440p (< 1440p)
+  -- Enter 2. for monitor resolution equal to or higher than 1440p (≥ 1440p)
+[ACTION] Enter the number of your choice (1 or 2): 1
+[OK] You have chosen < 1440p resolution.
+
+[NOTE]  By default, KooL's Dots are configured in 24H clock format.
+[ACTION] Do you want to change to 12H (AM/PM) clock format? (y/n): n
+[NOTE] You chose not to change to 12H format.
+
+[NOTE] By default, Rainbow Borders animation is enabled
+[WARN] However, this uses a bit more CPU and Memory resources.
+[ACTION] Do you want to disable Rainbow Borders animation? (y/N): y
+mv: cannot stat 'config/hypr/UserScripts/RainbowBorders.sh': No such file or directory
+sed: can't read config/hypr/configs/UserAnimations.conf: No such file or directory
+[OK] Rainbow borders are now disabled.
+
+[INFO] - copying dotfiles first part
+
+[INFO] Found fastfetch config found in ~/.config/
+[ACTION] Do you want to replace fastfetch config? (y/n): y
+[NOTE] - Backed up fastfetch to /home/ofirg/.config/fastfetch-backup-back-up_0120_1922.
+[OK] - Replaced fastfetch with new configuration.
+
+[INFO] Found kitty config found in ~/.config/
+[ACTION] Do you want to replace kitty config? (y/n): y
+[NOTE] - Backed up kitty to /home/ofirg/.config/kitty-backup-back-up_0120_1922.
+[OK] - Replaced kitty with new configuration.
+
+[INFO] Found rofi config found in ~/.config/
+[ACTION] Do you want to replace rofi config? (y/n): y
+[NOTE] - Backed up rofi to /home/ofirg/.config/rofi-backup-back-up_0120_1922.
+[OK] - Replaced rofi with new configuration.
+
+[INFO] Found swaync config found in ~/.config/
+[ACTION] Do you want to replace swaync config? (y/n): y
+[NOTE] - Backed up swaync to /home/ofirg/.config/swaync-backup-back-up_0120_1922.
+[OK] - Replaced swaync with new configuration.
+
+[OK] - Copy completed for waybar
+
+[INFO] - Copying dotfiles second part
+
+[NOTE] - Config for btop found, attempting to back up.
+[NOTE] - Backed up btop to /home/ofirg/.config/btop-backup-back-up_0120_1922.
+[OK] - Copy of config for btop completed!
+
+[NOTE] - Config for cava found, attempting to back up.
+[NOTE] - Backed up cava to /home/ofirg/.config/cava-backup-back-up_0120_1922.
+[OK] - Copy of config for cava completed!
+[OK] - Copy of config for hypr completed!
+
+[NOTE] - Config for Kvantum found, attempting to back up.
+[NOTE] - Backed up Kvantum to /home/ofirg/.config/Kvantum-backup-back-up_0120_1922.
+[OK] - Copy of config for Kvantum completed!
+
+[NOTE] - Config for qt5ct found, attempting to back up.
+[NOTE] - Backed up qt5ct to /home/ofirg/.config/qt5ct-backup-back-up_0120_1922.
+[OK] - Copy of config for qt5ct completed!
+
+[NOTE] - Config for qt6ct found, attempting to back up.
+[NOTE] - Backed up qt6ct to /home/ofirg/.config/qt6ct-backup-back-up_0120_1922.
+[OK] - Copy of config for qt6ct completed!
+
+[NOTE] - Config for swappy found, attempting to back up.
+[NOTE] - Backed up swappy to /home/ofirg/.config/swappy-backup-back-up_0120_1922.
+[OK] - Copy of config for swappy completed!
+
+[NOTE] - Config for wallust found, attempting to back up.
+[NOTE] - Backed up wallust to /home/ofirg/.config/wallust-backup-back-up_0120_1922.
+[OK] - Copy of config for wallust completed!
+
+[NOTE] - Config for wlogout found, attempting to back up.
+[NOTE] - Backed up wlogout to /home/ofirg/.config/wlogout-backup-back-up_0120_1922.
+[OK] - Copy of config for wlogout completed!
+
+
+
+
+
+
+
+
+[OK] Some wallpapers copied successfully!
+
+
+By default only a few wallpapers are copied...
+[NOTE] A number of these wallpapers are AI generated or enhanced. Select (N/n) if this is an issue for you.
+[ACTION] Would you like to download additional wallpapers? [WARN] This is 1GB in size (y/n): n
+[NOTE] You chose not to download additional wallpapers.
+
+
+[I] image: .wallpaper_current
+[I] image parser: Using Kmeans backend parser
+[I] threshold: Using a threshold of 11 in between colors.
+[I] colorspace: Using LabMixed colorspace variation
+[I] scheme palette: Using Dark16 palette
+[    🗸    ]     0.517 s	Generating color scheme..
+[I] Color scheme palette generated!
+
+
+
+[I] templates: Writing templates..
+ * Templated quickshell to '/home/ofirg/.config/quickshell/qml_color.json'
+ * Templated rofi to '/home/ofirg/.config/rofi/wallust/colors-rofi.rasi'
+ * Templated waybar to '/home/ofirg/.config/waybar/wallust/colors-waybar.css'
+ * Templated kitty to '/home/ofirg/.config/kitty/kitty-themes/01-Wallust.conf'
+ * Templated hypr to '/home/ofirg/.config/hypr/wallust/wallust-hyprland.conf'
+ * Templated cava to '/home/ofirg/.config/cava/config'
+[I] cache: Saving scheme to cache.
+
+E N J O Y   T H E   P A L E T T E !
+
+
+[OK] GREAT! KooL's Hyprland-Dots is now Loaded & Ready !!!
+[INFO] However, it is HIGHLY SUGGESTED to logout and re-login or better reboot to avoid any issues
+Thank you for using KooL's Hyprland Configuration... ENJOY!!!
+
