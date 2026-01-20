@@ -6,9 +6,9 @@
 set -euo pipefail
 
 # Always reset and bind SUPER+J/K the same way on startup
-hyprctl keyword unbind SUPER,J || true
-hyprctl keyword unbind SUPER,K || true
+hyprctl keyword unbind SUPER,bracketright || true
+hyprctl keyword unbind SUPER,bracketleft || true
 
 # Cycle windows globally: J = next, K = previous
-hyprctl keyword bind SUPER,J,cyclenext
-hyprctl keyword bind SUPER,K,cyclenext,prev
+hyprctl keyword bind SUPER,bracketright,cyclenext
+hyprctl keyword bind SUPER,bracketleft,cyclenext,prev
