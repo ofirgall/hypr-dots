@@ -7,6 +7,8 @@
 [ ] win+o move to other screen
 [ ] alacritty icon in workspaces
 
+Migrations:
+[ ] ofir waybar config: go over disabled widgets
 
 [ ] UserAnimations: check if relevant
     # animations for -git or version >0.42.0
