@@ -1,3 +1,17 @@
 git@github.com:JaKooLit/Ubuntu-Hyprland.git = 7b94c7adfae6860bc4ea0ecf9ba6067be3e21ef0 (grafted, HEAD -> 24.04, origin/24.04)
 git@github.com:JaKooLit/Hyprland-Dots.git = 7dedbe3d4a4560ac15987fdf8164dbbb1f4701bf (grafted, HEAD -> main, origin/main, origin/HEAD)
 
+Hyprland 0.53.1 built from branch  at commit ab1d80f3d6aebd57a0971b53a1993b1c1dfe0b09 clean (version: bump to 0.53.1).
+Date: Fri Jan 2 22:20:57 2026
+Tag: v0.53.1, commits: 6766
+
+Libraries:
+Hyprgraphics: built against 0.5.0, system has unknown
+Hyprutils: built against 0.11.0, system has unknown
+Hyprcursor: built against 0.1.13, system has unknown
+Hyprlang: built against 0.6.7, system has unknown
+Aquamarine: built against 0.10.0, system has unknown
+
+Version ABI string: ab1d80f3d6aebd57a0971b53a1993b1c1dfe0b09_aq_0.10_hu_0.11_hg_0.5_hc_0.1_hlg_0.6
+no flags were set
+
