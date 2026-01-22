@@ -5,6 +5,10 @@
 SCRIPTSDIR=$HOME/.config/hypr/scripts
 UserScripts=$HOME/.config/hypr/UserScripts
 
+# Reload hyprland
+hyprctl reload
+hyprctl dispatch vdeskreset # Reload virtual-desktops
+
 # Define file_exists function
 file_exists() {
   if [ -e "$1" ]; then
