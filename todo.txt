@@ -1,3 +1,5 @@
+[X] Multiple monitors support
+
 [X] windows rules
     1. browser to not open on 2
 [ ] multiple screen shares workspace?

@@ -1,7 +1,17 @@
 #!/usr/bin/env sh
 
+ sudo apt -y install hyprland-plugin-deps
+
+## Was required for Duckonaut/split-monitor-workspaces
+# sudo apt install g++-14 gcc-14
+# sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 10
+# sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 10
+# sudo update-alternatives --config gcc
+# sudo update-alternatives --config g++
+
+
 hyprpm update
-hyprpm -v add https://github.com/levnikmyskin/hyprland-virtual-desktops?tab=readme-ov-file#Layouts
+hyprpm -v add https://github.com/levnikmyskin/hyprland-virtual-desktops
 hyprpm enable virtual-desktops
 
 hyprpm reload -n # Reload the plugins
