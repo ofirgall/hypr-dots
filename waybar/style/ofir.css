@@ -31,6 +31,14 @@ window#waybar.empty #window {
     background-color: transparent;
 }
 
+#windowcount {
+	margin-left: 0px;
+	padding: 0px 5px;
+	border-bottom: 1px solid rgba(26,27,38,0);
+	border-radius: 0px;
+	color: #E6B673;
+}
+
 #taskbar,
 #workspaces {
   background: #0F1419;

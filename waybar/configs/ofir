@@ -27,6 +27,7 @@
 	// "hyprland/workspaces#rw",
 	// "custom/cava_mviz",
 	"hyprland/window",
+	"hyprland/windowcount",
 	],
 
 "modules-center": [
