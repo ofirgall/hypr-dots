@@ -1,18 +1,6 @@
-[X] Multiple monitors support
-
-[X] windows rules
-    1. browser to not open on 2
-[ ] multiple screen shares workspace?
-[X] change tmux workspace name by tmux session
+[ ] pin window (edit plugin)
+[ ] work on notifications
 [ ] create tmux viewer (win+shift+v)
 [ ] open last attached tmux sessions (win+a)
-[ ] win+o move to other screen
 [ ] alacritty icon in workspaces
-
-Migrations:
-[ ] ofir waybar config: go over disabled widgets
-
-[ ] UserAnimations: check if relevant
-    # animations for -git or version >0.42.0
-    animation = workspacesIn, 1, 5, winIn, slide
-    animation = workspacesOut, 1, 5, winOut, slide
+[ ] Show fullscreen/swallown windows
