@@ -3,4 +3,5 @@
 [ ] create tmux viewer (win+shift+v)
 [ ] open last attached tmux sessions (win+a)
 [ ] alacritty icon in workspaces
-[ ] Show fullscreen/swallown windows
+[V] Show fullscreen/swallown windows
+[ ] resolve rename bugs when switching workspaces

@@ -23,20 +23,20 @@
 //"font-size": 16px,
 
 "modules-left": [
-	"cffi/virtual-desktops",
+	"cffi/virtual-desktops"
 	// "hyprland/workspaces#rw",
 	// "custom/cava_mviz",
-	"hyprland/window",
-	"hyprland/windowcount",
 	],
 
 "modules-center": [
 	// "group/app_drawer",
 	// "idle_inhibitor",	
-	"custom/playerctl",
+	"hyprland/window"
+	// "hyprland/windowcount",
 	],
 
 "modules-right": [
+	"custom/playerctl",
 	"group/mobo_drawer",
 	"group/laptop",
 	"tray",
