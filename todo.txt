@@ -1,3 +1,6 @@
+[ ] use workspace hooks
+[ ] maximize 2 windows as awesomewm
+[ ] clear notifications
 [ ] pin window (edit plugin)
 [ ] work on notifications
 [ ] create tmux viewer (win+shift+v)
