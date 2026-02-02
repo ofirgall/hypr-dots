@@ -41,6 +41,7 @@
 	"group/laptop",
 	"tray",
 	"group/audio",
+	"hyprland/language",
 	"custom/swaync",
 	"clock#5",
 	"group/status",

@@ -175,9 +175,9 @@
 },
 
 "hyprland/language": {
-	"format": "Lang: {}",
+	"format": "{}",
 	"format-en": "US",
-	"format-tr": "Korea",
+	"format-he": "HE",
 	"keyboard-name": "at-translated-set-2-keyboard",
 	"on-click": "hyprctl switchxkblayout $SET_KB next"
 },
