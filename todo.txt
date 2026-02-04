@@ -1,10 +1,8 @@
 [ ] use workspace hooks
 [ ] maximize 2 windows as awesomewm
-[ ] clear notifications
+[V] clear notifications
 [ ] pin window (edit plugin)
 [ ] work on notifications
-[ ] create tmux viewer (win+shift+v)
-[ ] open last attached tmux sessions (win+a)
-[ ] alacritty icon in workspaces
+[V] create tmux viewer (win+shift+v)
 [V] Show fullscreen/swallown windows
 [ ] resolve rename bugs when switching workspaces
