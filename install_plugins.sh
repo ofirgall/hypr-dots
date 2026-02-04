@@ -11,7 +11,7 @@
 
 
 hyprpm update
-hyprpm -v add https://github.com/levnikmyskin/hyprland-virtual-desktops
+hyprpm -v add https://github.com/ofirgall/hyprland-virtual-desktops
 hyprpm enable virtual-desktops
 
 hyprpm reload -n # Reload the plugins
