@@ -13,6 +13,8 @@ import sys
 
 CONFIG_LOC = os.path.expanduser("~/.config/hypr/UserConfigs/VirtualDesktopsNames.conf")
 ICON = ''
+BROWSER_ICON = ''
+MAX_NAME_LENGTH = 20
 
 
 def run_hyprctl(args: list[str]) -> str:
@@ -85,7 +87,7 @@ def main():
     # Aggregate all renames into a dict
     renames: dict[int, str] = {}
     tmux_suffix = " - TMUX"
-    browser_classes = {"firefox", "chromium", "google-chrome", "brave-browser", "vivaldi", "zen", "zen-browser"}
+    browser_classes = {"firefox", "firefox_firefox", "chromium", "google-chrome", "brave-browser", "vivaldi", "zen", "zen-browser"}
 
     # Build a mapping of vdesk ID -> list of clients on that vdesk
     vdesk_clients: dict[int, list[dict]] = {}
@@ -123,6 +125,8 @@ def main():
 
         # Extract new name (remove the TMUX suffix) and add icon
         new_name = title[:-len(tmux_suffix)]
+        if len(new_name) > MAX_NAME_LENGTH:
+            new_name = new_name[:MAX_NAME_LENGTH] + "…"
         renames[vdesk_id] = f"{vdesk_id} {ICON} {new_name}"
 
     # For vdesks without TMUX clients, try to use a window title (prefer browsers)
@@ -147,7 +151,15 @@ def main():
             chosen = desk_clients[0]
 
         title = chosen.get("title", "")
-        renames[vdesk_id] = f"{vdesk_id} {ICON} {title}" if title else f"{vdesk_id}"
+        if not title:
+            renames[vdesk_id] = f"{vdesk_id}"
+            continue
+
+        is_browser = chosen.get("class", "").lower() in browser_classes
+        icon = BROWSER_ICON if is_browser else ICON
+        if len(title) > MAX_NAME_LENGTH:
+            title = title[:MAX_NAME_LENGTH] + "…"
+        renames[vdesk_id] = f"{vdesk_id} {icon} {title}"
 
     # Write names (only if changed)
     # print(renames)
