@@ -2,7 +2,8 @@
 """
 Rename virtual desktops based on TMUX client titles.
 Finds clients with "- TMUX" suffix and renames the vdesk to the client name without the suffix.
-Vdesks without TMUX clients are renamed to empty name.
+Vdesks without TMUX clients are renamed to the title of a window on that desk (browsers prioritized).
+Vdesks with no clients at all are renamed to their ID only.
 """
 
 import json
@@ -84,6 +85,20 @@ def main():
     # Aggregate all renames into a dict
     renames: dict[int, str] = {}
     tmux_suffix = " - TMUX"
+    browser_classes = {"firefox", "chromium", "google-chrome", "brave-browser", "vivaldi", "zen", "zen-browser"}
+
+    # Build a mapping of vdesk ID -> list of clients on that vdesk
+    vdesk_clients: dict[int, list[dict]] = {}
+    for client in clients:
+        workspace = client.get("workspace", {})
+        ws_id = workspace.get("id")
+        if ws_id is None:
+            continue
+        vdesk = workspace_to_vdesk.get(ws_id)
+        if vdesk is None:
+            continue
+        vdesk_id = vdesk.get("id")
+        vdesk_clients.setdefault(vdesk_id, []).append(client)
 
     # Find clients with "- TMUX" suffix
     for client in clients:
@@ -110,11 +125,29 @@ def main():
         new_name = title[:-len(tmux_suffix)]
         renames[vdesk_id] = f"{vdesk_id} {ICON} {new_name}"
 
-    # Set empty name for vdesks without TMUX clients
+    # For vdesks without TMUX clients, try to use a window title (prefer browsers)
     for vdesk in vdesks:
         vdesk_id = vdesk.get("id")
-        if vdesk_id not in renames:
+        if vdesk_id in renames:
+            continue
+
+        desk_clients = vdesk_clients.get(vdesk_id, [])
+        if not desk_clients:
             renames[vdesk_id] = f"{vdesk_id}"
+            continue
+
+        # Pick best client: prioritize browsers, then fall back to first client
+        chosen = None
+        for c in desk_clients:
+            cls = c.get("class", "").lower()
+            if cls in browser_classes:
+                chosen = c
+                break
+        if chosen is None:
+            chosen = desk_clients[0]
+
+        title = chosen.get("title", "")
+        renames[vdesk_id] = f"{vdesk_id} {ICON} {title}" if title else f"{vdesk_id}"
 
     # Write names (only if changed)
     # print(renames)
