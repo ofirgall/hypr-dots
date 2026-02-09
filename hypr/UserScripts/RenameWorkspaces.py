@@ -156,10 +156,12 @@ def main():
             continue
 
         is_browser = chosen.get("class", "").lower() in browser_classes
-        icon = BROWSER_ICON if is_browser else ICON
         if len(title) > MAX_NAME_LENGTH:
             title = title[:MAX_NAME_LENGTH] + "…"
-        renames[vdesk_id] = f"{vdesk_id} {icon} {title}"
+        if is_browser:
+            renames[vdesk_id] = f"{vdesk_id} {BROWSER_ICON} {title}"
+        else:
+            renames[vdesk_id] = f"{vdesk_id} {title}"
 
     # Write names (only if changed)
     # print(renames)
