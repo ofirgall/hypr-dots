@@ -107,6 +107,9 @@ def write_names(names: dict[int, str]) -> None:
     
     with open(CONFIG_LOC, "w") as f:
         f.write(content)
+    
+    # Reload workspace names
+    subprocess.run(["hyprctl", "dispatch", "vdeskreset"], capture_output=True)
 
 
 def main():
