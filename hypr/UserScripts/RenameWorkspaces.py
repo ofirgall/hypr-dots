@@ -144,7 +144,8 @@ def main():
         vdesk_id = vdesk.get("id")
         vdesk_clients.setdefault(vdesk_id, []).append(client)
 
-    # Find clients with "- TMUX" suffix
+    # Collect TMUX session names per vdesk
+    tmux_names: dict[int, list[str]] = {}
     for client in clients:
         title = client.get("title", "")
         if not title.endswith(tmux_suffix):
@@ -162,14 +163,14 @@ def main():
             continue
 
         vdesk_id = vdesk.get("id")
-        if vdesk_id in renames:
-            continue
+        name = clean_title(title[:-len(tmux_suffix)])
+        if len(name) > MAX_NAME_LENGTH:
+            name = name[:MAX_NAME_LENGTH] + "…"
+        tmux_names.setdefault(vdesk_id, []).append(name)
 
-        # Extract new name (remove the TMUX suffix) and add icon
-        new_name = clean_title(title[:-len(tmux_suffix)])
-        if len(new_name) > MAX_NAME_LENGTH:
-            new_name = new_name[:MAX_NAME_LENGTH] + "…"
-        renames[vdesk_id] = f"{vdesk_id} {ICON} {new_name}"
+    # Build renames for vdesks with TMUX clients
+    for vdesk_id, names in tmux_names.items():
+        renames[vdesk_id] = f"{vdesk_id} {ICON} {'|'.join(names)}"
 
     # For vdesks without TMUX clients, try to use a window title (prefer browsers)
     for vdesk in vdesks:
