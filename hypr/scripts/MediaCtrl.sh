@@ -19,14 +19,14 @@ play_previous() {
 # Toggle play/pause
 toggle_play_pause() {
   playerctl play-pause
-  sleep 0.1
+  sleep 0.2
   show_music_notification
 }
 
 # Stop playback
 stop_playback() {
   playerctl stop
-  notify-send -e -u low -i $music_icon " Playback:" " Stopped"
+  notify-send -e -u low -i $music_icon " Playback" " Stopped"
 }
 
 # Display notification with song information
@@ -35,9 +35,9 @@ show_music_notification() {
   if [[ "$status" == "Playing" ]]; then
     song_title=$(playerctl metadata title)
     song_artist=$(playerctl metadata artist)
-    notify-send -e -u low -i $music_icon "Now Playing:" "$song_title by $song_artist"
+    notify-send -e -u low -i $music_icon "Now Playing" "$song_title by $song_artist"
   elif [[ "$status" == "Paused" ]]; then
-    notify-send -e -u low -i $music_icon " Playback:" " Paused"
+    notify-send -e -u low -i $music_icon " Playback" " Paused"
   fi
 }
 
