@@ -144,8 +144,9 @@ def main():
         vdesk_id = vdesk.get("id")
         vdesk_clients.setdefault(vdesk_id, []).append(client)
 
-    # Collect TMUX session names per vdesk
+    # Collect TMUX session names per vdesk (separate viewer sessions)
     tmux_names: dict[int, list[str]] = {}
+    tmux_viewer_names: dict[int, list[str]] = {}
     for client in clients:
         title = client.get("title", "")
         if not title.endswith(tmux_suffix):
@@ -164,13 +165,28 @@ def main():
 
         vdesk_id = vdesk.get("id")
         name = clean_title(title[:-len(tmux_suffix)])
-        if len(name) > MAX_NAME_LENGTH:
-            name = name[:MAX_NAME_LENGTH] + "…"
-        tmux_names.setdefault(vdesk_id, []).append(name)
+        if len(display_name) > MAX_NAME_LENGTH:
+            display_name = display_name[:MAX_NAME_LENGTH] + "…"
+
+        if name.endswith("-viewer"):
+            tmux_viewer_names.setdefault(vdesk_id, []).append(display_name)
+        else:
+            tmux_names.setdefault(vdesk_id, []).append(display_name)
 
     # Build renames for vdesks with TMUX clients
-    for vdesk_id, names in tmux_names.items():
-        renames[vdesk_id] = f"{vdesk_id} {ICON} {'|'.join(names)}"
+    all_tmux_vdesks = set(tmux_names.keys()) | set(tmux_viewer_names.keys())
+    for vdesk_id in all_tmux_vdesks:
+        names = tmux_names.get(vdesk_id, [])
+        viewer_names = tmux_viewer_names.get(vdesk_id, [])
+
+        if names:
+            # Non-viewer sessions exist: only show those
+            renames[vdesk_id] = f"{vdesk_id} {ICON} {'|'.join(names)}"
+        elif viewer_names and len(vdesk_clients.get(vdesk_id, [])) == len(viewer_names):
+            # Only viewer sessions and they're the only windows on the vdesk
+            renames[vdesk_id] = f"{vdesk_id} {ICON} {'|'.join(viewer_names)}"
+        # Otherwise: viewer sessions exist but there are other non-TMUX windows,
+        # so skip and let the fallback logic below handle naming
 
     # For vdesks without TMUX clients, try to use a window title (prefer browsers)
     for vdesk in vdesks:
