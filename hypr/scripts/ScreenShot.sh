@@ -15,7 +15,7 @@ active_window_class=$(hyprctl -j activewindow | jq -r '(.class)')
 active_window_file="Screenshot_${time}_${active_window_class}.png"
 active_window_path="${dir}/${active_window_file}"
 
-notify_cmd_base="notify-send -t 10000 -A action1=Open -A action2=Delete -h string:x-canonical-private-synchronous:shot-notify"
+notify_cmd_base="notify-send -t 10000 -A action1=Open -A action3=Edit -A action2=Delete -h string:x-canonical-private-synchronous:shot-notify"
 notify_cmd_shot="${notify_cmd_base} -i ${iDIR}/picture.png "
 notify_cmd_shot_win="${notify_cmd_base} -i ${iDIR}/picture.png "
 notify_cmd_NOT="notify-send -u low -i ${iDoR}/note.png "
@@ -33,6 +33,9 @@ notify_view() {
 				action2)
 					rm "${active_window_path}" &
 					;;
+				action3)
+					pinta "${active_window_path}" &
+					;;
 			esac
         else
             ${notify_cmd_NOT} " Screenshot of:" " ${active_window_class} NOT Saved."
@@ -49,6 +52,10 @@ notify_view() {
 			action2)
 				rm "$tmpfile"
 				;;
+			action3)
+				pinta "$tmpfile"
+				wl-copy <"$tmpfile"
+				;;
 		esac
 
     else
@@ -62,6 +69,10 @@ notify_view() {
 					;;
 				action2)
 					rm "${check_file}" &
+					;;
+				action3)
+					pinta "${check_file}" &
+					wl-copy <"${check_file}"
 					;;
 			esac
         else
@@ -107,7 +118,7 @@ shotwin() {
 }
 
 shotarea() {
-	tmpfile=$(mktemp)
+	tmpfile=$(mktemp -d ~/Pictures/Screenshots/)
 	grim -g "$(slurp)" - >"$tmpfile"
 
   # Copy with saving
@@ -129,7 +140,8 @@ shotactive() {
 }
 
 shotswappy() {
-	tmpfile=$(mktemp)
+	tmpfile="$HOME/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png"
+	touch $tmpfile
 	grim -g "$(slurp)" - >"$tmpfile" 
 
   # Copy without saving
