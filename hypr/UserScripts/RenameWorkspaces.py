@@ -16,6 +16,26 @@ CONFIG_LOC = os.path.expanduser("~/.config/hypr/UserConfigs/VirtualDesktopsNames
 ICON = ''
 BROWSER_ICON = ''
 MAX_NAME_LENGTH = 20
+STATUS_ICONS = {
+    "INPROGRESS": "",
+    "WAITING": "",
+    "IDLE": "ﮧ",
+}
+
+
+def get_tmux_session_status(session_name: str) -> str:
+    """Get the cursor-cli-wrapper-status for a tmux session."""
+    try:
+        result = subprocess.run(
+            ["tmux", "show-options", "-t", session_name, "-v", "@cursor-cli-wrapper-status"],
+            capture_output=True,
+            text=True,
+            timeout=2,
+        )
+        status = result.stdout.strip()
+        return STATUS_ICONS.get(status, "")
+    except (subprocess.TimeoutExpired, Exception):
+        return ""
 
 
 EMOJI_RE = re.compile(
@@ -165,6 +185,11 @@ def main():
 
         vdesk_id = vdesk.get("id")
         name = clean_title(title[:-len(tmux_suffix)])
+
+        # Get status icon for this tmux session
+        status_icon = get_tmux_session_status(name)
+        display_name = f"{status_icon} {name}" if status_icon else name
+
         if len(display_name) > MAX_NAME_LENGTH:
             display_name = display_name[:MAX_NAME_LENGTH] + "…"
 
