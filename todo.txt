@@ -1,9 +1,10 @@
 [ ] rename vdesk dispatcher
+[ ] color vdesk name on cursor wait
 [V] use workspace hooks
-[ ] maximize 2 windows as awesomewm
+[V] maximize 2 windows as awesomewm
 [V] clear notifications
 [V] pin window (edit plugin)
-[ ] work on notifications
+[V] work on notifications
 [V] create tmux viewer (win+shift+v)
 [V] Show fullscreen/swallown windows
 [V] resolve rename bugs when switching workspaces
