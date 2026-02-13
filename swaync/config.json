@@ -29,6 +29,16 @@
   "hide-on-action": true,
   "text-empty": "No Notifications",
   "script-fail-notify": true,
+  "scripts": {
+    "default-sound": {
+      "exec": "pw-play /usr/share/sounds/freedesktop/stereo/message.oga",
+      "urgency": "Normal"
+    },
+    "critical-sound": {
+      "exec": "pw-play /usr/share/sounds/freedesktop/stereo/dialog-warning.oga",
+      "urgency": "Critical"
+    }
+  },
   "notification-visibility": {
     "example-name": {
       "state": "enabled",
