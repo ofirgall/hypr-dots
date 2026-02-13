@@ -1,3 +1,4 @@
 hypr/.initial_startup_done
 waybar/modules
 hypr/UserConfigs/VirtualDesktopsNames.conf
+**/__pycache__/
