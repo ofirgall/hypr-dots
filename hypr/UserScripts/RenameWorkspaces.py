@@ -13,17 +13,10 @@ import subprocess
 import sys
 
 from emojis import EMOJI_RE
+from icons import TMUX_ICON, BROWSER_ICON, AGENT_STATUS_ICONS
 
 CONFIG_LOC = os.path.expanduser("~/.config/hypr/UserConfigs/VirtualDesktopsNames.conf")
-ICON = ''
-BROWSER_ICON = ''
 MAX_NAME_LENGTH = 20
-STATUS_ICONS = {
-    "INPROGRESS": "",
-    "WAITING": "",
-    "IDLE": "ﮧ",
-}
-
 
 def get_tmux_session_status(session_name: str) -> str:
     """Get the cursor-cli-wrapper-status for a tmux session."""
@@ -35,7 +28,7 @@ def get_tmux_session_status(session_name: str) -> str:
             timeout=2,
         )
         status = result.stdout.strip()
-        return STATUS_ICONS.get(status, "")
+        return AGENT_STATUS_ICONS.get(status, "")
     except (subprocess.TimeoutExpired, Exception):
         return ""
 
@@ -177,10 +170,10 @@ def main():
 
         if names:
             # Non-viewer sessions exist: only show those
-            renames[vdesk_id] = f"{vdesk_id} {ICON} {'|'.join(names)}"
+            renames[vdesk_id] = f"{vdesk_id} {TMUX_ICON} {'|'.join(names)}"
         elif viewer_names and len(vdesk_clients.get(vdesk_id, [])) == len(viewer_names):
             # Only viewer sessions and they're the only windows on the vdesk
-            renames[vdesk_id] = f"{vdesk_id} {ICON} {'|'.join(viewer_names)}"
+            renames[vdesk_id] = f"{vdesk_id} {TMUX_ICON} {'|'.join(viewer_names)}"
         # Otherwise: viewer sessions exist but there are other non-TMUX windows,
         # so skip and let the fallback logic below handle naming
 
