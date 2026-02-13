@@ -13,7 +13,9 @@ import subprocess
 import sys
 
 from emojis import EMOJI_RE
+from hypr_enums import AGENT_STATUS
 from icons import TMUX_ICON, BROWSER_ICON, AGENT_STATUS_ICONS
+
 
 CONFIG_LOC = os.path.expanduser("~/.config/hypr/UserConfigs/VirtualDesktopsNames.conf")
 MAX_NAME_LENGTH = 20
