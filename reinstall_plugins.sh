@@ -4,6 +4,11 @@ set -e -x
 
 sudo echo "hey"
 
+
+cd waybar-vd && ./build.sh
+
+# upstream: wget -O ~/.config/waybar/modules/libwaybar_vd.so https://github.com/givani30/waybar-vd/releases/latest/download/libwaybar_vd.so
+
 hyprpm purge-cache
 hyprpm update
 hyprpm -v add https://github.com/ofirgall/hyprland-virtual-desktops
