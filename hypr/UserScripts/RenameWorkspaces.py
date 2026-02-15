@@ -20,8 +20,15 @@ from icons import TMUX_ICON, BROWSER_ICON, AGENT_STATUS_ICONS
 CONFIG_LOC = os.path.expanduser("~/.config/hypr/UserConfigs/VirtualDesktopsNames.conf")
 MAX_NAME_LENGTH = 20
 
-def get_tmux_session_status(session_name: str) -> str:
-    """Get the cursor-cli-wrapper-status for a tmux session."""
+STATUS_PRIORITY = {
+    AGENT_STATUS.INPROGRESS: 1,
+    AGENT_STATUS.WAITING: 2,
+    AGENT_STATUS.IDLE: 3,
+}
+
+
+def get_tmux_session_raw_status(session_name: str) -> str:
+    """Get the raw cursor-cli-wrapper-status for a tmux session."""
     try:
         result = subprocess.run(
             ["tmux", "show-options", "-t", session_name, "-v", "@cursor-cli-wrapper-status"],
@@ -29,10 +36,32 @@ def get_tmux_session_status(session_name: str) -> str:
             text=True,
             timeout=2,
         )
-        status = result.stdout.strip()
-        return AGENT_STATUS_ICONS.get(status, "")
+        return result.stdout.strip()
     except (subprocess.TimeoutExpired, Exception):
         return ""
+
+
+def highest_priority_status(statuses: list[str]) -> str:
+    """Return the highest priority status from a list (INPROGRESS > WAITING > IDLE)."""
+    best = None
+    best_priority = float("inf")
+    for s in statuses:
+        p = STATUS_PRIORITY.get(s)
+        if p is not None and p < best_priority:
+            best = s
+            best_priority = p
+    return best or ""
+
+
+def set_vdesk_statuses(vdesk_statuses: dict[int, list[str]], all_vdesk_ids: set[int]) -> None:
+    """Set vdesk status via hyprctl dispatch vdesksetstatus for each vdesk."""
+    for vdesk_id in all_vdesk_ids:
+        statuses = vdesk_statuses.get(vdesk_id, [])
+        status = highest_priority_status(statuses)
+        subprocess.run(
+            ["hyprctl", "dispatch", "vdesksetstatus", f"{vdesk_id},{status}"],
+            capture_output=True,
+        )
 
 
 def clean_title(title: str) -> str:
@@ -133,6 +162,7 @@ def main():
     # Collect TMUX session names per vdesk (separate viewer sessions)
     tmux_names: dict[int, list[str]] = {}
     tmux_viewer_names: dict[int, list[str]] = {}
+    vdesk_statuses: dict[int, list[str]] = {}
     for client in clients:
         title = client.get("title", "")
         if not title.endswith(tmux_suffix):
@@ -152,8 +182,11 @@ def main():
         vdesk_id = vdesk.get("id")
         name = clean_title(title[:-len(tmux_suffix)])
 
-        # Get status icon for this tmux session
-        status_icon = get_tmux_session_status(name)
+        # Get status for this tmux session
+        raw_status = get_tmux_session_raw_status(name)
+        if raw_status:
+            vdesk_statuses.setdefault(vdesk_id, []).append(raw_status)
+        status_icon = AGENT_STATUS_ICONS.get(raw_status, "")
         display_name = f"{status_icon} {name}" if status_icon else name
 
         if len(display_name) > MAX_NAME_LENGTH:
@@ -212,6 +245,10 @@ def main():
             renames[vdesk_id] = f"{vdesk_id} {BROWSER_ICON} {title}"
         else:
             renames[vdesk_id] = f"{vdesk_id} {title}"
+
+    # Set vdesk statuses (highest priority tmux session status per vdesk)
+    all_vdesk_ids = {vdesk.get("id") for vdesk in vdesks}
+    set_vdesk_statuses(vdesk_statuses, all_vdesk_ids)
 
     # Write names (only if changed)
     # print(renames)
