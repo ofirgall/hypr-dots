@@ -398,7 +398,6 @@ color: #F3F4F5;
 #waybar-vd button.hover {
 	/* border-radius: 15px; */
 	color: #0F1419;
-	background: linear-gradient(45deg, #59C2FF, #D2A6FF);
 	opacity: 0.8;
 	transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
 }
