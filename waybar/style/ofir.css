@@ -383,15 +383,15 @@ color: #F3F4F5;
 
 /* Status Virtual Desktop */
 #waybar-vd button.vdesk-status-idle {
-	background: linear-gradient(45deg, #23b023, #4e7a31);
+	background: linear-gradient(45deg, #09eb09, #0ca8a0);
 }
 
 #waybar-vd button.vdesk-status-inprogress {
-	background: linear-gradient(45deg, #d4ab0b, #c97916);
+	background: linear-gradient(45deg, #f0970a, #d93f0b);
 }
 
 #waybar-vd button.vdesk-status-waiting {
-	background: linear-gradient(45deg, #f00202, #f00285);
+	background: linear-gradient(45deg, #f20707, #f20775);
 }
 
 /* Manual Hover Effects (CSS :hover doesn't work in CFFI modules) */
