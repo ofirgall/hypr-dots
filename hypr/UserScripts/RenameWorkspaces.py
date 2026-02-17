@@ -64,6 +64,17 @@ def set_vdesk_statuses(vdesk_statuses: dict[int, list[str]], all_vdesk_ids: set[
         )
 
 
+JIRA_TICKET_RE = re.compile(r"[A-Z]+-\d+")
+
+
+def strip_prefix_to_jira(name: str) -> str:
+    """If name contains a JIRA ticket (e.g. DR-1299), strip everything before it."""
+    m = JIRA_TICKET_RE.search(name)
+    if m:
+        return name[m.start():]
+    return name
+
+
 def clean_title(title: str) -> str:
     """Remove emojis, collapse whitespace, and strip leading/trailing spaces."""
     title = EMOJI_RE.sub("", title)
@@ -180,7 +191,7 @@ def main():
             continue
 
         vdesk_id = vdesk.get("id")
-        name = clean_title(title[:-len(tmux_suffix)])
+        name = strip_prefix_to_jira(clean_title(title[:-len(tmux_suffix)]))
 
         # Get status for this tmux session
         raw_status = get_tmux_session_raw_status(name)
