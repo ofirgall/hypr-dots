@@ -197,10 +197,10 @@ def main():
         raw_status = get_tmux_session_raw_status(name)
         if raw_status:
             vdesk_statuses.setdefault(vdesk_id, []).append(raw_status)
-        status_icon = AGENT_STATUS_ICONS.get(raw_status, "")
+        icon = AGENT_STATUS_ICONS.get(raw_status, TMUX_ICON)
 
         name = strip_prefix_to_jira(name)
-        display_name = f"{status_icon} {name}" if status_icon else name
+        display_name = f"{icon} {name}"
 
         if len(display_name) > MAX_NAME_LENGTH:
             display_name = display_name[:MAX_NAME_LENGTH] + "…"
@@ -218,10 +218,10 @@ def main():
 
         if names:
             # Non-viewer sessions exist: only show those
-            renames[vdesk_id] = f"{vdesk_id} {TMUX_ICON} {'|'.join(names)}"
+            renames[vdesk_id] = f"{vdesk_id} {'|'.join(names)}"
         elif viewer_names and len(vdesk_clients.get(vdesk_id, [])) == len(viewer_names):
             # Only viewer sessions and they're the only windows on the vdesk
-            renames[vdesk_id] = f"{vdesk_id} {TMUX_ICON} {'|'.join(viewer_names)}"
+            renames[vdesk_id] = f"{vdesk_id} {'|'.join(viewer_names)}"
         # Otherwise: viewer sessions exist but there are other non-TMUX windows,
         # so skip and let the fallback logic below handle naming
 
