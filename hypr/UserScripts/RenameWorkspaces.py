@@ -191,13 +191,15 @@ def main():
             continue
 
         vdesk_id = vdesk.get("id")
-        name = strip_prefix_to_jira(clean_title(title[:-len(tmux_suffix)]))
+        name = clean_title(title[:-len(tmux_suffix)])
 
         # Get status for this tmux session
         raw_status = get_tmux_session_raw_status(name)
         if raw_status:
             vdesk_statuses.setdefault(vdesk_id, []).append(raw_status)
         status_icon = AGENT_STATUS_ICONS.get(raw_status, "")
+
+        name = strip_prefix_to_jira(name)
         display_name = f"{status_icon} {name}" if status_icon else name
 
         if len(display_name) > MAX_NAME_LENGTH:
