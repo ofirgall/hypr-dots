@@ -216,14 +216,16 @@ def main():
         names = tmux_names.get(vdesk_id, [])
         viewer_names = tmux_viewer_names.get(vdesk_id, [])
 
+        has_browser = any(
+            c.get("class", "").lower() in browser_classes
+            for c in vdesk_clients.get(vdesk_id, [])
+        )
+        icons_prefix = f"{BROWSER_ICON} " if has_browser else ""
+
         if names:
-            # Non-viewer sessions exist: only show those
-            renames[vdesk_id] = f"{vdesk_id} {'|'.join(names)}"
+            renames[vdesk_id] = f"{vdesk_id} {icons_prefix}{'|'.join(names)}"
         elif viewer_names and len(vdesk_clients.get(vdesk_id, [])) == len(viewer_names):
-            # Only viewer sessions and they're the only windows on the vdesk
-            renames[vdesk_id] = f"{vdesk_id} {'|'.join(viewer_names)}"
-        # Otherwise: viewer sessions exist but there are other non-TMUX windows,
-        # so skip and let the fallback logic below handle naming
+            renames[vdesk_id] = f"{vdesk_id} {icons_prefix}{'|'.join(viewer_names)}"
 
     # For vdesks without TMUX clients, try to use a window title (prefer browsers)
     for vdesk in vdesks:
