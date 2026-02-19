@@ -7,6 +7,7 @@ from hypr_enums import AGENT_STATUS
 
 TMUX_ICON = ''
 BROWSER_ICON = ''
+SLACK_ICON = ''
 
 AGENT_STATUS_ICONS = {
     AGENT_STATUS.INPROGRESS: "",

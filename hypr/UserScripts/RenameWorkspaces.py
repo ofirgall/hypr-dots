@@ -14,7 +14,7 @@ import sys
 
 from emojis import EMOJI_RE
 from hypr_enums import AGENT_STATUS
-from icons import TMUX_ICON, BROWSER_ICON, AGENT_STATUS_ICONS
+from icons import TMUX_ICON, BROWSER_ICON, SLACK_ICON, AGENT_STATUS_ICONS
 
 
 CONFIG_LOC = os.path.expanduser("~/.config/hypr/UserConfigs/VirtualDesktopsNames.conf")
@@ -156,6 +156,7 @@ def main():
     renames: dict[int, str] = {}
     tmux_suffix = " - TMUX"
     browser_classes = {"firefox", "firefox_firefox", "chromium", "google-chrome", "brave-browser", "vivaldi", "zen", "zen-browser"}
+    slack_classes = {"slack"}
 
     # Build a mapping of vdesk ID -> list of clients on that vdesk
     vdesk_clients: dict[int, list[dict]] = {}
@@ -220,7 +221,16 @@ def main():
             c.get("class", "").lower() in browser_classes
             for c in vdesk_clients.get(vdesk_id, [])
         )
-        icons_prefix = f"{BROWSER_ICON} " if has_browser else ""
+        has_slack = any(
+            c.get("class", "").lower() in slack_classes
+            for c in vdesk_clients.get(vdesk_id, [])
+        )
+        icons = []
+        if has_slack:
+            icons.append(SLACK_ICON)
+        if has_browser:
+            icons.append(BROWSER_ICON)
+        icons_prefix = " ".join(icons) + " " if icons else ""
 
         if names:
             renames[vdesk_id] = f"{vdesk_id} {icons_prefix}{'|'.join(names)}"
@@ -253,13 +263,33 @@ def main():
             renames[vdesk_id] = f"{vdesk_id}"
             continue
 
-        is_browser = chosen.get("class", "").lower() in browser_classes
+        has_browser = any(
+            c.get("class", "").lower() in browser_classes
+            for c in desk_clients
+        )
+        has_slack = any(
+            c.get("class", "").lower() in slack_classes
+            for c in desk_clients
+        )
+
+        only_slack = has_slack and not has_browser and all(
+            c.get("class", "").lower() in slack_classes
+            for c in desk_clients
+        )
+        if only_slack:
+            renames[vdesk_id] = f"{vdesk_id} {SLACK_ICON} Slack"
+            continue
+
+        icons = []
+        if has_slack:
+            icons.append(SLACK_ICON)
+        if has_browser:
+            icons.append(BROWSER_ICON)
+        icons_prefix = " ".join(icons) + " " if icons else ""
+
         if len(title) > MAX_NAME_LENGTH:
             title = title[:MAX_NAME_LENGTH] + "…"
-        if is_browser:
-            renames[vdesk_id] = f"{vdesk_id} {BROWSER_ICON} {title}"
-        else:
-            renames[vdesk_id] = f"{vdesk_id} {title}"
+        renames[vdesk_id] = f"{vdesk_id} {icons_prefix}{title}"
 
     # Set vdesk statuses (highest priority tmux session status per vdesk)
     all_vdesk_ids = {vdesk.get("id") for vdesk in vdesks}
