@@ -86,6 +86,7 @@ window#waybar.fullscreen #window {
 /* Status Virtual Desktop */
 #waybar-vd button.vdesk-status-idle-focused {
 	background: linear-gradient(60deg, #0be600, #00c8a7);
+	border: none;
 }
 
 #waybar-vd button.vdesk-status-idle-unfocused {
@@ -94,6 +95,7 @@ window#waybar.fullscreen #window {
 
 #waybar-vd button.vdesk-status-inprogress-focused {
 	background: linear-gradient(60deg, #fa7900, #ad3c17);
+	border: none;
 }
 
 #waybar-vd button.vdesk-status-inprogress-unfocused {
@@ -102,6 +104,7 @@ window#waybar.fullscreen #window {
 
 #waybar-vd button.vdesk-status-waiting-focused {
 	background: linear-gradient(60deg, #c80000, #c73268);
+	border: none;
 }
 
 #waybar-vd button.vdesk-status-waiting-unfocused {
