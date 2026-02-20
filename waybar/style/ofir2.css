@@ -57,34 +57,27 @@ tooltip {
 }
 
 #taskbar button,
+#waybar-vd button,
 #workspaces button {
 	color: #6E6A86;
     box-shadow: none;
 	text-shadow: none;
-    padding: 0px;
     border-radius: 9px;
-    padding-left: 4px;
-    padding-right: 4px;
-    animation: gradient_f 20s ease-in infinite;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+    padding-left: 6px;
+    padding-right: 6px;
 }
 
 #taskbar button.active,
+#waybar-vd button.vdesk-focused,
 #workspaces button.active {
 	color: #1e1e1e;
 	background-color: #cba6f7;
-    padding-left: 6px;
-    padding-right: 8px;
-    animation: gradient_f 20s ease-in infinite;
-    transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
 }
 
+
+#waybar-vd button.hover,
 #workspaces button.active:hover {
-	color: #1e1e1e;
-	border-radius: 30%;
-	background-color: #cba6f7;
-    padding-left: 6px;
-    padding-right: 8px;
+	color: #cba6f7;
 }
 
 #workspaces button.focused {
