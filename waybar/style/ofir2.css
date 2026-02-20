@@ -55,6 +55,9 @@ tooltip {
 	padding-right: 0px;
 	padding-left: 0px;
 }
+window#waybar.fullscreen #window {
+	color: #21946c;
+}
 
 #taskbar button,
 #waybar-vd button,
