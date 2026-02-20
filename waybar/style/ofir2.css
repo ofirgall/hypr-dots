@@ -41,6 +41,14 @@ tooltip {
 	padding-left: 0px;
 }
 
+.modules-left {
+	padding-right: 4px;
+}
+
+.modules-right {
+	padding-left: 4px;
+}
+
 .modules-center {
 	padding-top: 0px;
 	padding-bottom: 0px;
