@@ -50,6 +50,9 @@ tooltip {
 }
 
 .modules-center {
+	border: 3px solid #11111b;
+	border-radius: 10px 10px 10px 10px;
+	background-color: #313244;
 	padding-top: 0px;
 	padding-bottom: 0px;
 	padding-right: 0px;
