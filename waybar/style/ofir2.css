@@ -62,12 +62,12 @@ window#waybar.fullscreen #window {
 #taskbar button,
 #waybar-vd button,
 #workspaces button {
-	color: #6E6A86;
     box-shadow: none;
 	text-shadow: none;
     border-radius: 9px;
     padding-left: 6px;
     padding-right: 6px;
+	color: #000000;
 }
 
 #taskbar button.active,
@@ -79,6 +79,49 @@ window#waybar.fullscreen #window {
 
 #waybar-vd button.hover.vdesk-focused {
 	background: #2d1836;
+}
+
+/* Status Virtual Desktop */
+#waybar-vd button.vdesk-status-idle-focused {
+	background: linear-gradient(60deg, #0be600, #00c8a7);
+}
+
+#waybar-vd button.vdesk-status-idle-unfocused {
+	background-color: #16610a;
+}
+
+#waybar-vd button.vdesk-status-inprogress-focused {
+	background: linear-gradient(60deg, #fa7900, #ad3c17);
+}
+
+#waybar-vd button.vdesk-status-inprogress-unfocused {
+	background-color: #61380a;
+}
+
+#waybar-vd button.vdesk-status-waiting-focused {
+	background: linear-gradient(60deg, #c80000, #c73268);
+}
+
+#waybar-vd button.vdesk-status-waiting-unfocused {
+	background-color: #610a0a;
+}
+
+/* Animation States */
+#waybar-vd button.creating {
+    opacity: 0;
+}
+
+#waybar-vd button.destroying {
+    opacity: 0;
+    padding: 0;
+    margin: 0;
+}
+
+/* Hidden Virtual Desktops */
+#waybar-vd button.hidden {
+    opacity: 0;
+    padding: 0;
+    margin: 0;
 }
 
 #waybar-vd button.hover,
@@ -102,8 +145,8 @@ window#waybar.fullscreen #window {
 	border: 3px solid #1e1e2e;
 	background-color: #cba6f7;
     border-radius: 30%;
- 	padding-left: 4px;
-    padding-right: 4px;
+ 	padding-left: 0px;
+    padding-right: 0px;
     animation: gradient_f 20s ease-in infinite;
     transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
 }
@@ -223,3 +266,9 @@ window#waybar.fullscreen #window {
 	border-radius: 5px;
 	background-color: purple;
 }
+
+/*********** CUSTOM ***********/
+
+/* #language { */
+/* 	color: #b459ff; */
+/* } */
