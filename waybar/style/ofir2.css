@@ -74,6 +74,9 @@ tooltip {
 	background-color: #cba6f7;
 }
 
+#waybar-vd button.hover.vdesk-focused {
+	background: #2d1836;
+}
 
 #waybar-vd button.hover,
 #workspaces button.active:hover {
