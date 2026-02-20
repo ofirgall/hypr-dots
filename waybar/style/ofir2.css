@@ -35,17 +35,17 @@ tooltip {
 	border: 3px solid #11111b;
 	border-radius: 10px 10px 10px 10px;
 	background-color: #313244;
-	padding-top: 2px;
-	padding-bottom: 2px;
-	padding-right: 4px;
-	padding-left: 4px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 0px;
+	padding-left: 0px;
 }
 
 .modules-center {
-	padding-top: 2px;
-	padding-bottom: 2px;
-	padding-right: 4px;
-	padding-left: 4px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 0px;
+	padding-left: 0px;
 }
 
 #taskbar button,
@@ -64,7 +64,6 @@ tooltip {
 #taskbar button.active,
 #workspaces button.active {
 	color: #1e1e1e;
-	border-radius: 30%;
 	background-color: #cba6f7;
     padding-left: 6px;
     padding-right: 8px;
@@ -160,10 +159,10 @@ tooltip {
 #custom-weather.snowyIcyNight,
 #custom-weather.sunnyDay {
 	color: whitesmoke;
-	padding-top: 4px;
-	padding-bottom: 4px;
-	padding-right: 6px;
-	padding-left: 6px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 4px;
 
 }
 
