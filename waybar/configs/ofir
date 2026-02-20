@@ -38,14 +38,14 @@
 
 "modules-right": [
 	"custom/playerctl",
+	"tray",
 	"group/mobo_drawer",
 	"group/laptop",
-	"tray",
 	"group/audio",
 	"hyprland/language",
 	"custom/swaync",
 	"clock#5",
-	"group/status",
+	"custom/power"
 	],
 
 	"cffi/virtual-desktops": {
