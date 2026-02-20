@@ -1,3 +1,4 @@
+// vim: set ft=jsonc :
 //* ---- 💫 https://github.com/JaKooLit 💫 ---- *//
 /* Waybar Modules - Groups Modules */
 /* Basically created to reduce the lines in Waybar Modules bank */
@@ -56,11 +57,6 @@
 },
 "group/audio": {
 	"orientation": "inherit",
-	"drawer": {
-		"transition-duration": 500,
-		"children-class": "pulseaudio",
-		"transition-left-to-right": true
-        },
 	"modules": [
 		"pulseaudio",
 		"pulseaudio#microphone",
@@ -69,11 +65,6 @@
 
 "group/connections": {
 	"orientation": "inherit",
-	"drawer": {
-		"transition-duration": 500,
-		"children-class": "bluetooth",
-		"transition-left-to-right": true
-        },
 	"modules": [
 		"network",
 		"bluetooth",
