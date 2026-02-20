@@ -64,9 +64,11 @@ window#waybar.fullscreen #window {
 #workspaces button {
     box-shadow: none;
 	text-shadow: none;
-    border-radius: 9px;
-    padding-left: 6px;
-    padding-right: 6px;
+    padding-left: 4px;
+    padding-right: 4px;
+    border-radius: 0px;
+	margin-left: 0px;
+	margin-left: 0px;
 	color: #000000;
 }
 
