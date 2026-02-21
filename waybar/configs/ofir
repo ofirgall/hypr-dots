@@ -31,8 +31,8 @@
 "modules-center": [
 	// "group/app_drawer",
 	// "idle_inhibitor",	
+	"hyprland/windowcount",
 	"hyprland/window"
-	// "hyprland/windowcount",
 	],
 
 "modules-right": [
@@ -52,5 +52,14 @@
 		"module_path": "/home/ofirg/.config/waybar/modules/libwaybar_vd.so",
 		"format": "{name}",
 		"show_empty": true
+	},
+
+	"hyprland/windowcount": {
+		"format": "{}  ",
+		"format-empty": "",
+		"format-windowed": "",
+		// "format-fullscreen": "[{}]",
+		"separate-outputs": true
 	}
+
 }
