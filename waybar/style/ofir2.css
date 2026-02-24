@@ -83,6 +83,12 @@ window#waybar.fullscreen #window {
 	background-color: #cba6f7;
 }
 
+
+#waybar-vd button.vdesk-unfocused {
+	color: #8fa1b5;
+}
+
+/* TODO: add this hover logic for statuses */
 #waybar-vd button.hover.vdesk-focused {
 	background: #2d1836;
 }
@@ -94,6 +100,7 @@ window#waybar.fullscreen #window {
 }
 
 #waybar-vd button.vdesk-status-idle-unfocused {
+	color: #000000;
 	background-color: #16610a;
 }
 
@@ -103,6 +110,7 @@ window#waybar.fullscreen #window {
 }
 
 #waybar-vd button.vdesk-status-inprogress-unfocused {
+	color: #000000;
 	background-color: #61380a;
 }
 
@@ -112,6 +120,7 @@ window#waybar.fullscreen #window {
 }
 
 #waybar-vd button.vdesk-status-waiting-unfocused {
+	color: #000000;
 	background-color: #6f0c0c;
 }
 

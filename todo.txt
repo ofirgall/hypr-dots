@@ -1,4 +1,6 @@
-[ ] bug: pinned firefox is ﮧgetting confused when 2 firefox clients are active
+[ ] don't show slack icon if slack is sticky
+[ ] sticky change border color per window
+[V] bug: pinned firefox is ﮧgetting confused when 2 firefox clients are active
 [ ] vdesk picker via rofi
 [ ] rename vdesk dispatcher
 [v] color vdesk name on cursor wait
