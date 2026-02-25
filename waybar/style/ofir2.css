@@ -88,7 +88,9 @@ window#waybar.fullscreen #window {
 	color: #8fa1b5;
 }
 
-/* TODO: add this hover logic for statuses */
+#waybar-vd button.hover.vdesk-status-idle,
+#waybar-vd button.hover.vdesk-status-inprogress,
+#waybar-vd button.hover.vdesk-status-waiting,
 #waybar-vd button.hover.vdesk-focused {
 	background: #2d1836;
 }
