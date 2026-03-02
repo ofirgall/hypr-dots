@@ -7,10 +7,13 @@
 FULLSCREEN=$(hyprctl activewindow -j | jq -r '.fullscreen')
 
 if [ "$FULLSCREEN" != "0" ] && [ "$FULLSCREEN" != "false" ]; then
-    hyprctl dispatch fullscreen "$FULLSCREEN"
-    hyprctl dispatch cyclenext
-    hyprctl dispatch bringactivetotop
-    hyprctl dispatch fullscreen "$FULLSCREEN"
+    hyprctl keyword animations:enabled false
+    hyprctl --batch "\
+        dispatch fullscreen $FULLSCREEN; \
+        dispatch cyclenext; \
+        dispatch bringactivetotop; \
+        dispatch fullscreen $FULLSCREEN"
+    hyprctl keyword animations:enabled true
 else
     hyprctl dispatch cyclenext
     hyprctl dispatch bringactivetotop
