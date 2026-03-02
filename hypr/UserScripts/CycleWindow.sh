@@ -11,8 +11,8 @@ if [ "$FULLSCREEN" != "0" ] && [ "$FULLSCREEN" != "false" ]; then
     hyprctl --batch "\
         dispatch fullscreen $FULLSCREEN; \
         dispatch cyclenext; \
-        dispatch bringactivetotop; \
-        dispatch fullscreen $FULLSCREEN"
+        dispatch fullscreen $FULLSCREEN; \
+        dispatch bringactivetotop"
     hyprctl keyword animations:enabled true
 else
     hyprctl dispatch cyclenext
