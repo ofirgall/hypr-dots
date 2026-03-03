@@ -51,7 +51,8 @@
 	"cffi/virtual-desktops": {
 		"module_path": "/home/ofirg/.config/waybar/modules/libwaybar_vd.so",
 		"format": "{name}",
-		"show_empty": true
+		"show_empty": false,
+		"separator": "",
 	},
 
 	"hyprland/windowcount": {
