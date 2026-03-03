@@ -39,7 +39,7 @@
 	"custom/playerctl",
 	"tray",
 	"group/mobo_drawer",
-	"group/connections",
+	// "group/connections",
 	"group/audio",
 	"group/laptop",
 	"hyprland/language",
