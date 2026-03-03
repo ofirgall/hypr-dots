@@ -76,6 +76,10 @@ window#waybar.fullscreen #window {
 	margin-left: 0px;
 	margin-left: 0px;
 	color: #000000;
+
+	/* FIXME: only for vdesk without status */
+	border-right: 0.5px solid #817385;
+	border-left: 0.5px solid #817385;
 }
 
 #taskbar button.active,
