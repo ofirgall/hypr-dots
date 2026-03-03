@@ -73,7 +73,7 @@ def strip_prefix_and_jira(name: str) -> str:
     if m:
         ticket = m.group()
         number = ticket.split("-", 1)[1]
-        result = number + name[m.end():]
+        result = name[m.end():]
         return result.lstrip("-_ ") or name
     return name
 
