@@ -8,6 +8,7 @@
 	min-height: 0;		
 	/* set font-size to 100% if font scaling is set to 1.00 using nwg-look */
 	font-size: 97%;
+	/* font-size: 95%; */
 	font-feature-settings: '"zero", "ss01", "ss02", "ss03", "ss04", "ss05", "cv31"';
 }
 
@@ -34,8 +35,6 @@ tooltip {
 /*-----module groups----*/
 .modules-left,
 .modules-right {
-	/* letter-spacing: -1px; */
-
 	border: 3px solid #11111b;
 	border-radius: 10px 10px 10px 10px;
 	background-color: #23243e;
@@ -51,6 +50,7 @@ tooltip {
 
 .modules-right {
 	padding-left: 4px;
+	letter-spacing: -1px;
 }
 
 .modules-center {
