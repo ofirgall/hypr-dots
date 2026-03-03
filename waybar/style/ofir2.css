@@ -298,9 +298,10 @@ window#waybar.fullscreen #window {
 
 /*********** CUSTOM ***********/
 
-/* #language { */
-/* 	color: #b459ff; */
-/* } */
+#language {
+	color: #b459ff;
+	min-width: 15px;
+}
 
 
 /*********** FROM Ctppuccin Mocha ***********/
