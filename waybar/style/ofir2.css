@@ -76,10 +76,6 @@ window#waybar.fullscreen #window {
 	margin-left: 0px;
 	margin-left: 0px;
 	color: #000000;
-
-	/* FIXME: only for vdesk without status */
-	border-right: 0.5px solid #817385;
-	border-left: 0.5px solid #817385;
 }
 
 #taskbar button.active,
@@ -92,6 +88,11 @@ window#waybar.fullscreen #window {
 
 #waybar-vd button.vdesk-unfocused {
 	color: #a287c5;
+}
+
+#waybar-vd button.vdesk-nostatus {
+	border-right: 1px solid #817385;
+	border-left: 1px solid #817385;
 }
 
 #waybar-vd button.hover.vdesk-status-idle,
