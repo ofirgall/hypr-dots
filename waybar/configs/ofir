@@ -15,7 +15,7 @@
 "exclusive": true,
 "passthrough": false,
 "position": "top",
-"spacing": 2,
+"spacing": 0,
 "ipc": true,
 "margin-top": 0,
 "margin-left": 0,
