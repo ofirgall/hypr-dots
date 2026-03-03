@@ -67,11 +67,14 @@ def set_vdesk_statuses(vdesk_statuses: dict[int, list[str]], all_vdesk_ids: set[
 JIRA_TICKET_RE = re.compile(r"[A-Z]+-\d+")
 
 
-def strip_prefix_to_jira(name: str) -> str:
-    """If name contains a JIRA ticket (e.g. DR-1299), strip everything before it."""
+def strip_prefix_and_jira(name: str) -> str:
+    """Strip prefix and JIRA project key, keeping the number (e.g. 'ofirg-DR-1299-fix-bug' -> '1299-fix-bug')."""
     m = JIRA_TICKET_RE.search(name)
     if m:
-        return name[m.start():]
+        ticket = m.group()
+        number = ticket.split("-", 1)[1]
+        result = number + name[m.end():]
+        return result.lstrip("-_ ") or name
     return name
 
 
@@ -200,7 +203,7 @@ def main():
             vdesk_statuses.setdefault(vdesk_id, []).append(raw_status)
         icon = AGENT_STATUS_ICONS.get(raw_status, TMUX_ICON)
 
-        name = strip_prefix_to_jira(name)
+        name = strip_prefix_and_jira(name)
         display_name = f"{icon} {name}"
 
         if len(display_name) > MAX_NAME_LENGTH:
