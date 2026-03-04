@@ -87,7 +87,7 @@ def longest_common_prefix(names: list[str]) -> str:
     """
     if len(names) < 2:
         return ""
-    threshold = max(2, (len(names) + 1) // 2)
+    threshold = max(2, len(names) // 2 + 1)
     best_prefix = ""
     candidates = list(names)
     pos = 0
