@@ -15,7 +15,7 @@ active_window_class=$(hyprctl -j activewindow | jq -r '(.class)')
 active_window_file="Screenshot_${time}_${active_window_class}.png"
 active_window_path="${dir}/${active_window_file}"
 
-notify_cmd_base="notify-send -t 10000 -A action1=Open -A action3=Edit -A action2=Delete -h string:x-canonical-private-synchronous:shot-notify"
+notify_cmd_base="notify-send -t 10000 -A action1=Edit -A action2=Copy-Path -A action3=Delete -h string:x-canonical-private-synchronous:shot-notify"
 notify_cmd_shot="${notify_cmd_base} -i ${iDIR}/picture.png "
 notify_cmd_shot_win="${notify_cmd_base} -i ${iDIR}/picture.png "
 notify_cmd_NOT="notify-send -u low -i ${iDoR}/note.png "
@@ -28,13 +28,13 @@ notify_view() {
             resp=$(timeout 5 ${notify_cmd_shot_win} " Screenshot of:" " ${active_window_class} Saved.")
             case "$resp" in
 				action1)
-					xdg-open "${active_window_path}" &
+					pinta "${active_window_path}" &
 					;;
 				action2)
-					rm "${active_window_path}" &
+					echo -n "${active_window_path}" | wl-copy
 					;;
 				action3)
-					pinta "${active_window_path}" &
+					rm "${active_window_path}" &
 					;;
 			esac
         else
@@ -47,14 +47,13 @@ notify_view() {
 		resp=$(${notify_cmd_shot} " Screenshot:" " Captured by Swappy")
 		case "$resp" in
 			action1)
-				swappy -f - <"$tmpfile"
+				pinta "$tmpfile" &
 				;;
 			action2)
-				rm "$tmpfile"
+				echo -n "$tmpfile" | wl-copy
 				;;
 			action3)
-				pinta "$tmpfile"
-				wl-copy <"$tmpfile"
+				rm "$tmpfile"
 				;;
 		esac
 
@@ -65,14 +64,13 @@ notify_view() {
             resp=$(timeout 5 ${notify_cmd_shot} " Screenshot" " Saved")
 			case "$resp" in
 				action1)
-					xdg-open "${check_file}" &
+					pinta "${check_file}" &
 					;;
 				action2)
-					rm "${check_file}" &
+					echo -n "${check_file}" | wl-copy
 					;;
 				action3)
-					pinta "${check_file}" &
-					wl-copy <"${check_file}"
+					rm "${check_file}" &
 					;;
 			esac
         else
