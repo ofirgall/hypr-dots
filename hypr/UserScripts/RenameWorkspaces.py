@@ -78,6 +78,35 @@ def strip_prefix_and_jira(name: str) -> str:
     return name
 
 
+def longest_common_prefix(names: list[str]) -> str:
+    """Find the longest prefix shared by a majority of names.
+
+    Greedily extends the prefix character-by-character, following the most
+    popular branch at each position. Stops when fewer than a majority of the
+    original names still match.
+    """
+    if len(names) < 2:
+        return ""
+    threshold = max(2, (len(names) + 1) // 2)
+    best_prefix = ""
+    candidates = list(names)
+    pos = 0
+    while True:
+        char_counts: dict[str, list[str]] = {}
+        for name in candidates:
+            if pos < len(name):
+                char_counts.setdefault(name[pos], []).append(name)
+        if not char_counts:
+            break
+        best_group = max(char_counts.values(), key=len)
+        if len(best_group) < threshold:
+            break
+        candidates = best_group
+        pos += 1
+        best_prefix = candidates[0][:pos]
+    return best_prefix
+
+
 def clean_title(title: str) -> str:
     """Remove emojis, collapse whitespace, and strip leading/trailing spaces."""
     title = EMOJI_RE.sub("", title)
@@ -113,6 +142,18 @@ def get_clients() -> list[dict]:
     except json.JSONDecodeError:
         print(f"Error parsing clients JSON: {output}", file=sys.stderr)
         return []
+
+
+def get_active_vdesk_id(workspace_to_vdesk: dict) -> int | None:
+    """Get the vdesk ID of the currently active workspace."""
+    output = run_hyprctl(["activeworkspace", "-j"])
+    try:
+        ws = json.loads(output)
+        ws_id = ws.get("id")
+        vdesk = workspace_to_vdesk.get(ws_id)
+        return vdesk.get("id") if vdesk else None
+    except (json.JSONDecodeError, AttributeError):
+        return None
 
 
 def write_names(names: dict[int, str]) -> None:
@@ -174,9 +215,9 @@ def main():
         vdesk_id = vdesk.get("id")
         vdesk_clients.setdefault(vdesk_id, []).append(client)
 
-    # Collect TMUX session names per vdesk (separate viewer sessions)
-    tmux_names: dict[int, list[str]] = {}
-    tmux_viewer_names: dict[int, list[str]] = {}
+    # Collect TMUX session (icon, raw_name) per vdesk (separate viewer sessions)
+    tmux_names: dict[int, list[tuple[str, str]]] = {}
+    tmux_viewer_names: dict[int, list[tuple[str, str]]] = {}
     vdesk_statuses: dict[int, list[str]] = {}
     for client in clients:
         title = client.get("title", "")
@@ -204,21 +245,35 @@ def main():
         icon = AGENT_STATUS_ICONS.get(raw_status, TMUX_ICON)
 
         name = strip_prefix_and_jira(name)
-        display_name = f"{icon} {name}"
-
-        if len(display_name) > MAX_NAME_LENGTH:
-            display_name = display_name[:MAX_NAME_LENGTH] + "…"
 
         if name.endswith("-viewer"):
-            tmux_viewer_names.setdefault(vdesk_id, []).append(display_name)
+            tmux_viewer_names.setdefault(vdesk_id, []).append((icon, name))
         else:
-            tmux_names.setdefault(vdesk_id, []).append(display_name)
+            tmux_names.setdefault(vdesk_id, []).append((icon, name))
+
+    # Compute common prefix across all TMUX session names for shortening
+    all_raw_names = [name for entries in tmux_names.values() for _, name in entries]
+    all_raw_names += [name for entries in tmux_viewer_names.values() for _, name in entries]
+    prefix = longest_common_prefix(all_raw_names)
+
+    active_vdesk_id = get_active_vdesk_id(workspace_to_vdesk)
+
+    def format_tmux_entry(icon: str, raw_name: str, use_full: bool) -> str:
+        if use_full or not raw_name.startswith(prefix):
+            name = raw_name
+        else:
+            name = raw_name[len(prefix):] or raw_name
+        display = f"{icon} {name}"
+        if len(display) > MAX_NAME_LENGTH:
+            display = display[:MAX_NAME_LENGTH] + "…"
+        return display
 
     # Build renames for vdesks with TMUX clients
     all_tmux_vdesks = set(tmux_names.keys()) | set(tmux_viewer_names.keys())
     for vdesk_id in all_tmux_vdesks:
-        names = tmux_names.get(vdesk_id, [])
-        viewer_names = tmux_viewer_names.get(vdesk_id, [])
+        entries = tmux_names.get(vdesk_id, [])
+        viewer_entries = tmux_viewer_names.get(vdesk_id, [])
+        is_active = vdesk_id == active_vdesk_id
 
         has_browser = any(
             c.get("class", "").lower() in browser_classes
@@ -235,10 +290,12 @@ def main():
             icons.append(BROWSER_ICON)
         icons_prefix = " ".join(icons) + " " if icons else ""
 
-        if names:
-            renames[vdesk_id] = f"{vdesk_id} {icons_prefix}{'|'.join(names)}"
-        elif viewer_names and len(vdesk_clients.get(vdesk_id, [])) == len(viewer_names):
-            renames[vdesk_id] = f"{vdesk_id} {icons_prefix}{'|'.join(viewer_names)}"
+        if entries:
+            formatted = [format_tmux_entry(icon, name, is_active) for icon, name in entries]
+            renames[vdesk_id] = f"{vdesk_id} {icons_prefix}{'|'.join(formatted)}"
+        elif viewer_entries and len(vdesk_clients.get(vdesk_id, [])) == len(viewer_entries):
+            formatted = [format_tmux_entry(icon, name, is_active) for icon, name in viewer_entries]
+            renames[vdesk_id] = f"{vdesk_id} {icons_prefix}{'|'.join(formatted)}"
 
     # For vdesks without TMUX clients, try to use a window title (prefer browsers)
     for vdesk in vdesks:
