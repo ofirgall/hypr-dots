@@ -78,33 +78,31 @@ def strip_prefix_and_jira(name: str) -> str:
     return name
 
 
-def longest_common_prefix(names: list[str]) -> str:
-    """Find the longest prefix shared by a majority of names.
+SEPARATORS = set("-_/. ")
 
-    Greedily extends the prefix character-by-character, following the most
-    popular branch at each position. Stops when fewer than a majority of the
-    original names still match.
+
+def longest_common_prefix(names: list[str]) -> str:
+    """Find the longest separator-terminated prefix shared by at least 2 names.
+
+    Collects every prefix that ends at a separator character from each name,
+    then returns the longest one that appears in at least 2 names.
     """
     if len(names) < 2:
         return ""
-    threshold = max(2, len(names) // 2 + 1)
-    best_prefix = ""
-    candidates = list(names)
-    pos = 0
-    while True:
-        char_counts: dict[str, list[str]] = {}
-        for name in candidates:
-            if pos < len(name):
-                char_counts.setdefault(name[pos], []).append(name)
-        if not char_counts:
-            break
-        best_group = max(char_counts.values(), key=len)
-        if len(best_group) < threshold:
-            break
-        candidates = best_group
-        pos += 1
-        best_prefix = candidates[0][:pos]
-    return best_prefix
+    prefix_counts: dict[str, int] = {}
+    for name in names:
+        seen: set[str] = set()
+        for i, ch in enumerate(name):
+            if ch in SEPARATORS:
+                prefix = name[: i + 1]
+                if prefix not in seen:
+                    seen.add(prefix)
+                    prefix_counts[prefix] = prefix_counts.get(prefix, 0) + 1
+    best = ""
+    for prefix, count in prefix_counts.items():
+        if count >= 2 and len(prefix) > len(best):
+            best = prefix
+    return best
 
 
 def clean_title(title: str) -> str:
@@ -356,7 +354,6 @@ def main():
     set_vdesk_statuses(vdesk_statuses, all_vdesk_ids)
 
     # Write names (only if changed)
-    # print(renames)
     write_names(renames)
 
 
