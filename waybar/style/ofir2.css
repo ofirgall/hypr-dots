@@ -101,6 +101,13 @@ window#waybar.fullscreen #window {
 	border-left: 1px solid #817385;
 }
 
+#waybar-vd button.vdesk-first {
+	border-left: none;
+}
+#waybar-vd button.vdesk-last {
+	border-right: none;
+}
+
 #waybar-vd button.hover.vdesk-status-idle,
 #waybar-vd button.hover.vdesk-status-inprogress,
 #waybar-vd button.hover.vdesk-status-waiting,
