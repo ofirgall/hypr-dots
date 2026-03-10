@@ -132,7 +132,7 @@ shotactive() {
     active_window_file="Screenshot_${time}_${active_window_class}.png"
     active_window_path="${dir}/${active_window_file}"
 
-    hyprctl -j activewindow | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"' | grim -g - "${active_window_path}"
+    hyprctl -j activewindow | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"' | grim -c -g - "${active_window_path}"
 	sleep 1
     notify_view "active"
 }
@@ -140,7 +140,9 @@ shotactive() {
 shotswappy() {
 	tmpfile="$HOME/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png"
 	touch $tmpfile
-	grim -g "$(slurp)" - >"$tmpfile" 
+
+	. "$HOME/.cargo/env" # add wayfreeze to path
+	wayfreeze --after-freeze-cmd "grim -c -g \"\$(slurp)\" - > $tmpfile; killall wayfreeze"
 
   # Copy without saving
   if [[ -s "$tmpfile" ]]; then
