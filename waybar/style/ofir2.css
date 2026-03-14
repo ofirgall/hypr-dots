@@ -23,6 +23,7 @@
 window#waybar {
 	background: #11111b;
 	color: #cba6f7;
+	margin-bottom: -1px;
 }
 
 window#waybar.hidden {
