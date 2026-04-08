@@ -14,6 +14,10 @@ hyprpm update
 hyprpm -v add https://github.com/ofirgall/hyprland-virtual-desktops
 hyprpm enable virtual-desktops
 
+# FIXME: use native monocle layout when upgrading hyprland
+hyprpm -v add https://github.com/pianocomposer321/hyprland-monocle
+hyprpm enable monocle
+
 hyprpm reload -n # Reload the plugins
 
 git clone git@github.com:ofirgall/waybar-vd.git

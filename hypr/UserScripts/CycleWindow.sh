@@ -1,19 +1,15 @@
 #!/usr/bin/env bash
 
-# Cycle to the next window, handling fullscreen state.
-# If the active window is fullscreen, exit fullscreen first,
-# cycle to the next window, then fullscreen the new window.
+# Cycle to the next window.
+# If the active window is in a group (monocle mode), use changegroupactive.
+# Otherwise, use cyclenext.
+# TODO: When upgrading Hyprland to a version with built-in monocle layout,
+# replace the group check with a layout check and use `layoutmsg cyclenext`.
 
-FULLSCREEN=$(hyprctl activewindow -j | jq -r '.fullscreen')
+GROUPED=$(hyprctl activewindow -j | jq -r '.grouped | length')
 
-if [ "$FULLSCREEN" != "0" ] && [ "$FULLSCREEN" != "false" ]; then
-    hyprctl keyword animations:enabled false
-    hyprctl --batch "\
-        dispatch fullscreen $FULLSCREEN; \
-        dispatch cyclenext; \
-        dispatch fullscreen $FULLSCREEN; \
-        dispatch bringactivetotop"
-    hyprctl keyword animations:enabled true
+if [ "$GROUPED" -gt 1 ]; then
+    hyprctl dispatch changegroupactive f
 else
     hyprctl dispatch cyclenext
     hyprctl dispatch bringactivetotop
