@@ -63,6 +63,14 @@ case "$1" in
     "--dec")
         change_brightness "-$step"
         ;;
+    "--max")
+        brightnessctl set "100%"
+        send_notification 100 "$(get_icon_path 100)"
+        ;;
+    "--min")
+        brightnessctl set "1%"
+        send_notification 1 "$(get_icon_path 1)"
+        ;;
     *)
         get_brightness
         ;;

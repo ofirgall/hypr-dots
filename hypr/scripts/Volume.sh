@@ -137,6 +137,10 @@ elif [[ "$1" == "--get-mic-icon" ]]; then
 	get_mic_icon
 elif [[ "$1" == "--mic-inc" ]]; then
 	inc_mic_volume
+elif [[ "$1" == "--max" ]]; then
+	pamixer --set-volume 100 && notify_user
+elif [[ "$1" == "--min" ]]; then
+	pamixer --set-volume 1 && notify_user
 elif [[ "$1" == "--mic-dec" ]]; then
 	dec_mic_volume
 else
