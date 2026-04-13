@@ -142,6 +142,16 @@ def get_clients() -> list[dict]:
         return []
 
 
+def get_pinned_classes() -> set[str]:
+    """Get the set of window classes that are currently pinned."""
+    output = run_hyprctl(["printpinnedwindows", "-j"])
+    try:
+        windows = json.loads(output)
+        return {w.get("class", "").lower() for w in windows}
+    except json.JSONDecodeError:
+        return set()
+
+
 def get_active_vdesk_id(workspace_to_vdesk: dict) -> int | None:
     """Get the vdesk ID of the currently active workspace."""
     output = run_hyprctl(["activeworkspace", "-j"])
@@ -254,6 +264,7 @@ def main():
     all_raw_names += [name for entries in tmux_viewer_names.values() for _, name in entries]
     prefix = longest_common_prefix(all_raw_names)
 
+    pinned_classes = get_pinned_classes()
     active_vdesk_id = get_active_vdesk_id(workspace_to_vdesk)
 
     def format_tmux_entry(icon: str, raw_name: str, use_full: bool) -> str:
@@ -278,7 +289,7 @@ def main():
             for c in vdesk_clients.get(vdesk_id, [])
         )
         has_slack = any(
-            c.get("class", "").lower() in slack_classes
+            c.get("class", "").lower() in slack_classes - pinned_classes
             for c in vdesk_clients.get(vdesk_id, [])
         )
         icons = []
@@ -326,7 +337,7 @@ def main():
             for c in desk_clients
         )
         has_slack = any(
-            c.get("class", "").lower() in slack_classes
+            c.get("class", "").lower() in slack_classes - pinned_classes
             for c in desk_clients
         )
 
