@@ -11,7 +11,11 @@ cd waybar-vd && ./build.sh
 
 hyprpm purge-cache
 hyprpm update
+
 hyprpm -v add https://github.com/ofirgall/hyprland-virtual-desktops
 hyprpm enable virtual-desktops
+
+hyprpm -v add https://github.com/ofirgall/hyprland-monocle
+hyprpm enable monocle
 
 hyprpm reload -n # Reload the plugins
