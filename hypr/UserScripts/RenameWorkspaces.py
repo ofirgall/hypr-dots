@@ -28,15 +28,20 @@ STATUS_PRIORITY = {
 
 
 def get_tmux_session_raw_status(session_name: str) -> str:
-    """Get the raw cursor-cli-wrapper-status for a tmux session."""
+    """Get the raw @ai-agent-status for a tmux session.
+
+    The option is set per-window, so we collect the status from every window in
+    the session and return the highest-priority one.
+    """
     try:
-        result = subprocess.run(
-            ["tmux", "show-options", "-t", session_name, "-v", "@cursor-cli-wrapper-status"],
+        list_result = subprocess.run(
+            ["tmux", "list-windows", "-t", session_name, "-F", "#{@ai-agent-status}"],
             capture_output=True,
             text=True,
             timeout=2,
         )
-        return result.stdout.strip()
+        statuses = [s.strip() for s in list_result.stdout.splitlines() if s.strip()]
+        return highest_priority_status(statuses)
     except (subprocess.TimeoutExpired, Exception):
         return ""
 
