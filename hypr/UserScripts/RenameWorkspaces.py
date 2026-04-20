@@ -6,6 +6,7 @@ Vdesks without TMUX clients are renamed to the title of a window on that desk (b
 Vdesks with no clients at all are renamed to their ID only.
 """
 
+import argparse
 import json
 import os
 import re
@@ -26,6 +27,13 @@ STATUS_PRIORITY = {
     AGENT_STATUS.IDLE: 3,
 }
 
+DEBUG = False
+
+
+def debug(msg: str) -> None:
+    if DEBUG:
+        print(f"[debug] {msg}", file=sys.stderr)
+
 
 def get_tmux_session_raw_status(session_name: str) -> str:
     """Get the raw @ai-agent-status for a tmux session.
@@ -41,8 +49,12 @@ def get_tmux_session_raw_status(session_name: str) -> str:
             timeout=2,
         )
         statuses = [s.strip() for s in list_result.stdout.splitlines() if s.strip()]
-        return highest_priority_status(statuses)
-    except (subprocess.TimeoutExpired, Exception):
+        debug(f"tmux session {session_name!r} window statuses: {statuses}")
+        winner = highest_priority_status(statuses)
+        debug(f"tmux session {session_name!r} resolved status: {winner!r}")
+        return winner
+    except (subprocess.TimeoutExpired, Exception) as e:
+        debug(f"tmux session {session_name!r} status lookup failed: {e!r}")
         return ""
 
 
@@ -63,6 +75,7 @@ def set_vdesk_statuses(vdesk_statuses: dict[int, list[str]], all_vdesk_ids: set[
     for vdesk_id in all_vdesk_ids:
         statuses = vdesk_statuses.get(vdesk_id, [])
         status = highest_priority_status(statuses)
+        debug(f"vdesk {vdesk_id} statuses={statuses} -> {status!r}")
         subprocess.run(
             ["hyprctl", "dispatch", "vdesksetstatus", f"{vdesk_id},{status}"],
             capture_output=True,
@@ -196,6 +209,12 @@ def write_names(names: dict[int, str]) -> None:
 
 
 def main():
+    global DEBUG
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--debug", action="store_true", help="Print debug logs for status resolution")
+    args = parser.parse_args()
+    DEBUG = args.debug
+
     vdesks = get_vdesks()
     clients = get_clients()
 
@@ -254,6 +273,7 @@ def main():
         # Get status for this tmux session
         raw_status = get_tmux_session_raw_status(name)
         if raw_status:
+            debug(f"vdesk {vdesk_id} tmux {name!r} contributes status {raw_status!r}")
             vdesk_statuses.setdefault(vdesk_id, []).append(raw_status)
         icon = AGENT_STATUS_ICONS.get(raw_status, TMUX_ICON)
 
