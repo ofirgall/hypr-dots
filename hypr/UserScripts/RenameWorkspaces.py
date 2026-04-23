@@ -126,6 +126,7 @@ def longest_common_prefix(names: list[str]) -> str:
 def clean_title(title: str) -> str:
     """Remove emojis, collapse whitespace, and strip leading/trailing spaces."""
     title = EMOJI_RE.sub("", title)
+    title = title.replace("「", "").replace("」", "")
     title = re.sub(r"\s+", " ", title)
     return title.strip()
 
