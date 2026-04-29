@@ -328,7 +328,7 @@ def main():
         if entries:
             formatted = [format_tmux_entry(icon, name, is_active) for icon, name in entries]
             renames[vdesk_id] = f"{vdesk_id} {icons_prefix}{'|'.join(formatted)}"
-        elif viewer_entries and len(vdesk_clients.get(vdesk_id, [])) == len(viewer_entries):
+        elif viewer_entries:
             formatted = [format_tmux_entry(icon, name, is_active) for icon, name in viewer_entries]
             renames[vdesk_id] = f"{vdesk_id} {icons_prefix}{'|'.join(formatted)}"
 
