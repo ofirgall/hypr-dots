@@ -102,11 +102,19 @@ window#waybar.fullscreen #window {
 	border-left: 1px solid #817385;
 }
 
-#waybar-vd button.vdesk-first {
-	border-left: none;
+#waybar-vd button.vdesk-status-idle {
+	border-right: 1px solid #0a3305;
+	border-left: 1px solid #0a3305;
 }
-#waybar-vd button.vdesk-last {
-	border-right: none;
+
+#waybar-vd button.vdesk-status-inprogress {
+	border-right: 1px solid #331c05;
+	border-left: 1px solid #331c05;
+}
+
+#waybar-vd button.vdesk-status-waiting {
+	border-right: 1px solid #3a0606;
+	border-left: 1px solid #3a0606;
 }
 
 #waybar-vd button.hover.vdesk-status-idle,
@@ -145,6 +153,13 @@ window#waybar.fullscreen #window {
 #waybar-vd button.vdesk-status-waiting-unfocused {
 	color: #000000;
 	background-color: #6f0c0c;
+}
+
+#waybar-vd button.vdesk-first {
+	border-left: none;
+}
+#waybar-vd button.vdesk-last {
+	border-right: none;
 }
 
 /* Animation States */
