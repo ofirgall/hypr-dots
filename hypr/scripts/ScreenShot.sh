@@ -15,7 +15,7 @@ active_window_class=$(hyprctl -j activewindow | jq -r '(.class)')
 active_window_file="Screenshot_${time}_${active_window_class}.png"
 active_window_path="${dir}/${active_window_file}"
 
-notify_cmd_base="notify-send -t 10000 -A action1=Edit -A action2=Copy-Path -A action3=Delete -h string:x-canonical-private-synchronous:shot-notify"
+notify_cmd_base="notify-send -t 10000 -A action1=Edit -A action2=Copy -A action3=Edit+Copy -h string:x-canonical-private-synchronous:shot-notify"
 notify_cmd_shot="${notify_cmd_base} -i ${iDIR}/picture.png "
 notify_cmd_shot_win="${notify_cmd_base} -i ${iDIR}/picture.png "
 notify_cmd_NOT="notify-send -u low -i ${iDoR}/note.png "
@@ -34,7 +34,8 @@ notify_view() {
 					echo -n "${active_window_path}" | wl-copy
 					;;
 				action3)
-					rm "${active_window_path}" &
+					echo -n "${active_window_path}" | wl-copy
+					pinta "${active_window_path}" &
 					;;
 			esac
         else
@@ -53,7 +54,8 @@ notify_view() {
 				echo -n "$tmpfile" | wl-copy
 				;;
 			action3)
-				rm "$tmpfile"
+				echo -n "$tmpfile" | wl-copy
+				pinta "$tmpfile" &
 				;;
 		esac
 
@@ -70,7 +72,8 @@ notify_view() {
 					echo -n "${check_file}" | wl-copy
 					;;
 				action3)
-					rm "${check_file}" &
+					echo -n "${check_file}" | wl-copy
+					pinta "${check_file}" &
 					;;
 			esac
         else
