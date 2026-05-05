@@ -6,4 +6,5 @@ from enum import StrEnum
 class AGENT_STATUS(StrEnum):
     INPROGRESS = "INPROGRESS"
     WAITING = "WAITING"
+    DONE = "DONE"
     IDLE = "IDLE"

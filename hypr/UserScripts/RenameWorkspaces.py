@@ -24,7 +24,8 @@ MAX_NAME_LENGTH = 20
 STATUS_PRIORITY = {
     AGENT_STATUS.INPROGRESS: 1,
     AGENT_STATUS.WAITING: 2,
-    AGENT_STATUS.IDLE: 3,
+    AGENT_STATUS.DONE: 3,
+    AGENT_STATUS.IDLE: 4,
 }
 
 DEBUG = False
@@ -59,7 +60,7 @@ def get_tmux_session_raw_status(session_name: str) -> str:
 
 
 def highest_priority_status(statuses: list[str]) -> str:
-    """Return the highest priority status from a list (INPROGRESS > WAITING > IDLE)."""
+    """Return the highest priority status from a list (INPROGRESS > WAITING > DONE > IDLE)."""
     best = None
     best_priority = float("inf")
     for s in statuses:

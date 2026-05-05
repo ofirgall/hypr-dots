@@ -117,9 +117,15 @@ window#waybar.fullscreen #window {
 	border-left: 1px solid #3a0606;
 }
 
+#waybar-vd button.vdesk-status-done {
+	border-right: 1px solid #0a1f3a;
+	border-left: 1px solid #0a1f3a;
+}
+
 #waybar-vd button.hover.vdesk-status-idle,
 #waybar-vd button.hover.vdesk-status-inprogress,
 #waybar-vd button.hover.vdesk-status-waiting,
+#waybar-vd button.hover.vdesk-status-done,
 #waybar-vd button.hover.vdesk-focused {
 	background: #2d1836;
 }
@@ -153,6 +159,16 @@ window#waybar.fullscreen #window {
 #waybar-vd button.vdesk-status-waiting-unfocused {
 	color: #000000;
 	background-color: #6f0c0c;
+}
+
+#waybar-vd button.vdesk-status-done-focused {
+	background: linear-gradient(60deg, #1e88ff, #00c8a7);
+	border: none;
+}
+
+#waybar-vd button.vdesk-status-done-unfocused {
+	color: #000000;
+	background-color: #0c4583;
 }
 
 #waybar-vd button.vdesk-first {
