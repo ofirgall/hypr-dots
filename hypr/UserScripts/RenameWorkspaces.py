@@ -15,15 +15,15 @@ import sys
 
 from emojis import EMOJI_RE
 from hypr_enums import AGENT_STATUS
-from icons import TMUX_ICON, BROWSER_ICON, SLACK_ICON, AGENT_STATUS_ICONS
+from icons import TMUX_ICON, BROWSER_ICON, SLACK_ICON, AGENT_STATUS_ICONS, MONITOR_STATUS_ICONS
 
 
 CONFIG_LOC = os.path.expanduser("~/.config/hypr/UserConfigs/VirtualDesktopsNames.conf")
 MAX_NAME_LENGTH = 20
 
 STATUS_PRIORITY = {
-    AGENT_STATUS.INPROGRESS: 1,
-    AGENT_STATUS.WAITING: 2,
+    AGENT_STATUS.WAITING: 1,
+    AGENT_STATUS.INPROGRESS: 2,
     AGENT_STATUS.DONE: 3,
     AGENT_STATUS.IDLE: 4,
 }
@@ -36,27 +36,38 @@ def debug(msg: str) -> None:
         print(f"[debug] {msg}", file=sys.stderr)
 
 
-def get_tmux_session_raw_status(session_name: str) -> str:
-    """Get the raw @ai-agent-status for a tmux session.
+def get_tmux_session_statuses(session_name: str) -> tuple[str, list[str]]:
+    """Get per-window @ai-agent-status and @monitor-status for a tmux session.
 
-    The option is set per-window, so we collect the status from every window in
-    the session and return the highest-priority one.
+    Returns a tuple of:
+      - the aggregated @ai-agent-status (highest priority across windows), and
+      - the ordered list of per-window @monitor-status values (empties dropped).
     """
     try:
         list_result = subprocess.run(
-            ["tmux", "list-windows", "-t", session_name, "-F", "#{@ai-agent-status}"],
+            ["tmux", "list-windows", "-t", session_name, "-F",
+             "#{@ai-agent-status}|#{@monitor-status}"],
             capture_output=True,
             text=True,
             timeout=2,
         )
-        statuses = [s.strip() for s in list_result.stdout.splitlines() if s.strip()]
-        debug(f"tmux session {session_name!r} window statuses: {statuses}")
-        winner = highest_priority_status(statuses)
-        debug(f"tmux session {session_name!r} resolved status: {winner!r}")
-        return winner
+        agent_statuses: list[str] = []
+        monitor_statuses: list[str] = []
+        for line in list_result.stdout.splitlines():
+            agent, _, monitor = line.partition("|")
+            agent = agent.strip()
+            monitor = monitor.strip()
+            if agent:
+                agent_statuses.append(agent)
+            if monitor:
+                monitor_statuses.append(monitor)
+        debug(f"tmux session {session_name!r} agent={agent_statuses} monitor={monitor_statuses}")
+        agent_winner = highest_priority_status(agent_statuses)
+        debug(f"tmux session {session_name!r} resolved agent status: {agent_winner!r}")
+        return agent_winner, monitor_statuses
     except (subprocess.TimeoutExpired, Exception) as e:
         debug(f"tmux session {session_name!r} status lookup failed: {e!r}")
-        return ""
+        return "", []
 
 
 def highest_priority_status(statuses: list[str]) -> str:
@@ -249,9 +260,9 @@ def main():
         vdesk_id = vdesk.get("id")
         vdesk_clients.setdefault(vdesk_id, []).append(client)
 
-    # Collect TMUX session (icon, raw_name) per vdesk (separate viewer sessions)
-    tmux_names: dict[int, list[tuple[str, str]]] = {}
-    tmux_viewer_names: dict[int, list[tuple[str, str]]] = {}
+    # Collect TMUX session (agent_icon, monitor_icons, raw_name) per vdesk (separate viewer sessions)
+    tmux_names: dict[int, list[tuple[str, str, str]]] = {}
+    tmux_viewer_names: dict[int, list[tuple[str, str, str]]] = {}
     vdesk_statuses: dict[int, list[str]] = {}
     for client in clients:
         title = client.get("title", "")
@@ -272,34 +283,42 @@ def main():
         vdesk_id = vdesk.get("id")
         name = clean_title(title[:-len(tmux_suffix)])
 
-        # Get status for this tmux session
-        raw_status = get_tmux_session_raw_status(name)
-        if raw_status:
-            debug(f"vdesk {vdesk_id} tmux {name!r} contributes status {raw_status!r}")
-            vdesk_statuses.setdefault(vdesk_id, []).append(raw_status)
-        icon = AGENT_STATUS_ICONS.get(raw_status, TMUX_ICON)
+        # Get statuses for this tmux session
+        agent_status, monitor_statuses = get_tmux_session_statuses(name)
+        if agent_status:
+            debug(f"vdesk {vdesk_id} tmux {name!r} contributes agent status {agent_status!r}")
+            vdesk_statuses.setdefault(vdesk_id, []).append(agent_status)
+        for ms in monitor_statuses:
+            debug(f"vdesk {vdesk_id} tmux {name!r} contributes monitor status {ms!r}")
+            vdesk_statuses.setdefault(vdesk_id, []).append(ms)
+
+        agent_icon = AGENT_STATUS_ICONS.get(agent_status, TMUX_ICON)
+        monitor_icons = "".join(
+            MONITOR_STATUS_ICONS[s] for s in monitor_statuses if s in MONITOR_STATUS_ICONS
+        )
 
         name = strip_prefix_and_jira(name)
 
         if name.endswith("-viewer"):
-            tmux_viewer_names.setdefault(vdesk_id, []).append((icon, name))
+            tmux_viewer_names.setdefault(vdesk_id, []).append((agent_icon, monitor_icons, name))
         else:
-            tmux_names.setdefault(vdesk_id, []).append((icon, name))
+            tmux_names.setdefault(vdesk_id, []).append((agent_icon, monitor_icons, name))
 
     # Compute common prefix across all TMUX session names for shortening
-    all_raw_names = [name for entries in tmux_names.values() for _, name in entries]
-    all_raw_names += [name for entries in tmux_viewer_names.values() for _, name in entries]
+    all_raw_names = [name for entries in tmux_names.values() for _, _, name in entries]
+    all_raw_names += [name for entries in tmux_viewer_names.values() for _, _, name in entries]
     prefix = longest_common_prefix(all_raw_names)
 
     pinned_classes = get_pinned_classes()
     active_vdesk_id = get_active_vdesk_id(workspace_to_vdesk)
 
-    def format_tmux_entry(icon: str, raw_name: str, use_full: bool) -> str:
+    def format_tmux_entry(agent_icon: str, monitor_icons: str, raw_name: str, use_full: bool) -> str:
         if use_full or not raw_name.startswith(prefix):
             name = raw_name
         else:
             name = raw_name[len(prefix):] or raw_name
-        display = f"{icon} {name}"
+        prefix_icons = agent_icon + (" " + monitor_icons if monitor_icons else "")
+        display = f"{prefix_icons} {name}"
         if len(display) > MAX_NAME_LENGTH:
             display = display[:MAX_NAME_LENGTH] + "…"
         return display
@@ -327,10 +346,10 @@ def main():
         icons_prefix = " ".join(icons) + " " if icons else ""
 
         if entries:
-            formatted = [format_tmux_entry(icon, name, is_active) for icon, name in entries]
+            formatted = [format_tmux_entry(a, m, name, is_active) for a, m, name in entries]
             renames[vdesk_id] = f"{vdesk_id} {icons_prefix}{'|'.join(formatted)}"
         elif viewer_entries:
-            formatted = [format_tmux_entry(icon, name, is_active) for icon, name in viewer_entries]
+            formatted = [format_tmux_entry(a, m, name, is_active) for a, m, name in viewer_entries]
             renames[vdesk_id] = f"{vdesk_id} {icons_prefix}{'|'.join(formatted)}"
 
     # For vdesks without TMUX clients, try to use a window title (prefer browsers)

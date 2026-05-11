@@ -15,3 +15,10 @@ AGENT_STATUS_ICONS = {
     AGENT_STATUS.IDLE: "󰚩",
     AGENT_STATUS.DONE: "",
 }
+
+MONITOR_STATUS_ICONS = {
+    AGENT_STATUS.INPROGRESS: "󰦖",
+    AGENT_STATUS.WAITING: "󰲼", # Not Used
+    AGENT_STATUS.IDLE: "󰲽", # Not Used
+    AGENT_STATUS.DONE: "󱞈", # Not Used
+}
