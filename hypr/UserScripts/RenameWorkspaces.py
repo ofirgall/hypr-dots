@@ -97,14 +97,21 @@ def set_vdesk_statuses(vdesk_statuses: dict[int, list[str]], all_vdesk_ids: set[
 JIRA_TICKET_RE = re.compile(r"[A-Z]+-\d+")
 
 
-def strip_prefix_and_jira(name: str) -> str:
-    """Strip prefix and JIRA project key, keeping the number (e.g. 'ofirg-DR-1299-fix-bug' -> '1299-fix-bug')."""
+def strip_prefix_and_jira(name: str, keep_number: bool = False) -> str:
+    """Strip prefix and JIRA project key.
+
+    With keep_number=True, retains the ticket number
+    (e.g. 'ofirg-DR-1299-fix-bug' -> '1299-fix-bug').
+    Otherwise drops it (e.g. 'ofirg-DR-1299-fix-bug' -> 'fix-bug').
+    """
     m = JIRA_TICKET_RE.search(name)
     if m:
         ticket = m.group()
         number = ticket.split("-", 1)[1]
         rest = name[m.end():].lstrip("-_ ")
-        return f"{number}-{rest}" if rest else number
+        if keep_number:
+            return f"{number}-{rest}" if rest else number
+        return rest or name
     return name
 
 
@@ -260,6 +267,8 @@ def main():
         vdesk_id = vdesk.get("id")
         vdesk_clients.setdefault(vdesk_id, []).append(client)
 
+    active_vdesk_id = get_active_vdesk_id(workspace_to_vdesk)
+
     # Collect TMUX session (agent_icon, monitor_icons, raw_name) per vdesk (separate viewer sessions)
     tmux_names: dict[int, list[tuple[str, str, str]]] = {}
     tmux_viewer_names: dict[int, list[tuple[str, str, str]]] = {}
@@ -297,7 +306,7 @@ def main():
             MONITOR_STATUS_ICONS[s] for s in monitor_statuses if s in MONITOR_STATUS_ICONS
         )
 
-        name = strip_prefix_and_jira(name)
+        name = strip_prefix_and_jira(name, keep_number=vdesk_id == active_vdesk_id)
 
         if name.endswith("-viewer"):
             tmux_viewer_names.setdefault(vdesk_id, []).append((agent_icon, monitor_icons, name))
@@ -310,7 +319,6 @@ def main():
     prefix = longest_common_prefix(all_raw_names)
 
     pinned_classes = get_pinned_classes()
-    active_vdesk_id = get_active_vdesk_id(workspace_to_vdesk)
 
     def format_tmux_entry(agent_icon: str, monitor_icons: str, raw_name: str, use_full: bool) -> str:
         if use_full or not raw_name.startswith(prefix):
