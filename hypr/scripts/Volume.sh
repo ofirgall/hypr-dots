@@ -5,6 +5,7 @@
 iDIR="$HOME/.config/swaync/icons"
 sDIR="$HOME/.config/hypr/scripts"
 VOL_STEP=1
+LIMIT=200
 
 # Get Volume
 get_volume() {
@@ -45,7 +46,7 @@ inc_volume() {
     if [ "$(pamixer --get-mute)" == "true" ]; then
         toggle_mute
     else
-        pamixer -i $VOL_STEP --allow-boost --set-limit 150 && notify_user
+        pamixer -i $VOL_STEP --allow-boost --set-limit $LIMIT && notify_user
     fi
 }
 
@@ -54,7 +55,7 @@ dec_volume() {
     if [ "$(pamixer --get-mute)" == "true" ]; then
         toggle_mute
     else
-        pamixer -d $VOL_STEP --allow-boost --set-limit 150 && notify_user
+        pamixer -d $VOL_STEP --allow-boost --set-limit $LIMIT && notify_user
     fi
 }
 
