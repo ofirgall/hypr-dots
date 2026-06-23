@@ -136,6 +136,9 @@ shotactive() {
     active_window_path="${dir}/${active_window_file}"
 
     hyprctl -j activewindow | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"' | grim -c -g - "${active_window_path}"
+	if [[ -s "${active_window_path}" ]]; then
+		wl-copy <"${active_window_path}"
+	fi
 	sleep 1
     notify_view "active"
 }
