@@ -2,10 +2,20 @@
 
 set -e -x
 
+NO_WAYBAR=false
+
+while [ $# -gt 0 ]; do
+	case "$1" in
+		--no-waybar) NO_WAYBAR=true ;;
+	esac
+	shift
+done
+
 sudo echo "hey"
 
-
-cd waybar-vd && ./build.sh
+if [ "$NO_WAYBAR" = false ]; then
+	cd waybar-vd && ./build.sh
+fi
 
 # upstream: wget -O ~/.config/waybar/modules/libwaybar_vd.so https://github.com/givani30/waybar-vd/releases/latest/download/libwaybar_vd.so
 
