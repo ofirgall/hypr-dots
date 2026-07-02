@@ -68,6 +68,7 @@ tooltip {
 }
 
 window#waybar.fullscreen #windowcount,
+window#waybar.fullscreen #custom-windowcount,
 window#waybar.fullscreen #window {
 	color: #32bbbf;
 }
@@ -457,6 +458,7 @@ window#waybar.fullscreen #window {
 }
 
 #windowcount,
+#custom-windowcount,
 #window {
   color: @mauve;
 }

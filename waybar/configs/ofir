@@ -31,7 +31,7 @@
 "modules-center": [
 	// "group/app_drawer",
 	// "idle_inhibitor",	
-	"hyprland/windowcount",
+	"custom/windowcount",
 	"hyprland/window"
 	],
 
@@ -55,12 +55,11 @@
 		"separator": "",
 	},
 
-	"hyprland/windowcount": {
+	"custom/windowcount": {
+		"exec": "$HOME/.config/waybar/scripts/windowcount.sh",
 		"format": "{}  ",
-		"format-empty": "",
-		"format-windowed": "",
-		// "format-fullscreen": "[{}]",
-		"separate-outputs": true
+		"restart-interval": 0,
+		"tooltip": false
 	}
 
 }
