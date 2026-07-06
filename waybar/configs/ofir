@@ -56,9 +56,9 @@
 	},
 
 	"custom/windowcount": {
-		"exec": "$HOME/.config/waybar/scripts/windowcount.sh",
+		"exec": "exec $HOME/.config/waybar/scripts/windowcount.sh",
 		"format": "{}  ",
-		"restart-interval": 0,
+		"restart-interval": 1,
 		"tooltip": false
 	}
 
