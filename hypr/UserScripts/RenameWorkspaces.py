@@ -249,11 +249,8 @@ def check_and_update_active_vdesk(active_vdesk_id: int | None) -> bool:
 
 def reset_waybar() -> None:
     """Reload workspace names in waybar via vdeskreset."""
-    import time
-    for i in range(2):
-        result = subprocess.run(["hyprctl", "dispatch", "vdeskreset"], capture_output=True)
-        log.debug(f"vdeskreset exit={result.returncode} stdout={result.stdout.decode().strip()} stderr={result.stderr.decode().strip()}")
-        time.sleep(0.5)
+    result = subprocess.run(["hyprctl", "dispatch", "vdeskreset"], capture_output=True)
+    log.debug(f"vdeskreset exit={result.returncode} stdout={result.stdout.decode().strip()} stderr={result.stderr.decode().strip()}")
 
 
 def main():
