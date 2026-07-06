@@ -132,42 +132,42 @@ window#waybar.fullscreen #window {
 }
 
 /* Status Virtual Desktop */
-#waybar-vd button.vdesk-status-idle-focused {
+#waybar-vd button.vdesk-status-idle.vdesk-focused {
 	background: linear-gradient(60deg, #0be600, #00c8a7);
 	border: none;
 }
 
-#waybar-vd button.vdesk-status-idle-unfocused {
+#waybar-vd button.vdesk-status-idle.vdesk-unfocused {
 	color: #000000;
 	background-color: #16610a;
 }
 
-#waybar-vd button.vdesk-status-inprogress-focused {
+#waybar-vd button.vdesk-status-inprogress.vdesk-focused {
 	background: linear-gradient(60deg, #fa7900, #ad3c17);
 	border: none;
 }
 
-#waybar-vd button.vdesk-status-inprogress-unfocused {
+#waybar-vd button.vdesk-status-inprogress.vdesk-unfocused {
 	color: #000000;
 	background-color: #61380a;
 }
 
-#waybar-vd button.vdesk-status-waiting-focused {
+#waybar-vd button.vdesk-status-waiting.vdesk-focused {
 	background: linear-gradient(60deg, #c80000, #c73268);
 	border: none;
 }
 
-#waybar-vd button.vdesk-status-waiting-unfocused {
+#waybar-vd button.vdesk-status-waiting.vdesk-unfocused {
 	color: #000000;
 	background-color: #6f0c0c;
 }
 
-#waybar-vd button.vdesk-status-done-focused {
+#waybar-vd button.vdesk-status-done.vdesk-focused {
 	background: linear-gradient(60deg, #1e88ff, #00c8a7);
 	border: none;
 }
 
-#waybar-vd button.vdesk-status-done-unfocused {
+#waybar-vd button.vdesk-status-done.vdesk-unfocused {
 	color: #000000;
 	background-color: #0c4583;
 }
@@ -246,7 +246,7 @@ window#waybar.fullscreen #window {
 #window,
 #wireplumber,
 #workspaces,
-#warbar-vd,
+/* #waybar-vd, */
 #custom-backlight,
 #custom-browser,
 #custom-cava_mviz,
