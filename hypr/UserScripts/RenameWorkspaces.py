@@ -8,6 +8,7 @@ Vdesks with no clients at all are renamed to their ID only.
 
 import argparse
 import json
+import logging
 import os
 import re
 import subprocess
@@ -28,12 +29,7 @@ STATUS_PRIORITY = {
     AGENT_STATUS.IDLE: 4,
 }
 
-DEBUG = False
-
-
-def debug(msg: str) -> None:
-    if DEBUG:
-        print(f"[debug] {msg}", file=sys.stderr)
+log = logging.getLogger(__name__)
 
 
 def get_tmux_session_statuses(session_name: str) -> tuple[str, list[str]]:
@@ -61,12 +57,12 @@ def get_tmux_session_statuses(session_name: str) -> tuple[str, list[str]]:
                 agent_statuses.append(agent)
             if monitor:
                 monitor_statuses.append(monitor)
-        debug(f"tmux session {session_name!r} agent={agent_statuses} monitor={monitor_statuses}")
+        log.debug(f"tmux session {session_name!r} agent={agent_statuses} monitor={monitor_statuses}")
         agent_winner = highest_priority_status(agent_statuses)
-        debug(f"tmux session {session_name!r} resolved agent status: {agent_winner!r}")
+        log.debug(f"tmux session {session_name!r} resolved agent status: {agent_winner!r}")
         return agent_winner, monitor_statuses
     except (subprocess.TimeoutExpired, Exception) as e:
-        debug(f"tmux session {session_name!r} status lookup failed: {e!r}")
+        log.debug(f"tmux session {session_name!r} status lookup failed: {e!r}")
         return "", []
 
 
@@ -87,7 +83,7 @@ def set_vdesk_statuses(vdesk_statuses: dict[int, list[str]], all_vdesk_ids: set[
     for vdesk_id in all_vdesk_ids:
         statuses = vdesk_statuses.get(vdesk_id, [])
         status = highest_priority_status(statuses)
-        debug(f"vdesk {vdesk_id} statuses={statuses} -> {status!r}")
+        log.debug(f"vdesk {vdesk_id} statuses={statuses} -> {status!r}")
         subprocess.run(
             ["hyprctl", "dispatch", "vdesksetstatus", f"{vdesk_id},{status}"],
             capture_output=True,
@@ -202,8 +198,8 @@ def get_active_vdesk_id(workspace_to_vdesk: dict) -> int | None:
         return None
 
 
-def write_names(names: dict[int, str]) -> None:
-    """Write vdesk names to config file if changed."""
+def write_names(names: dict[int, str]) -> bool:
+    """Write vdesk names to config file if changed. Returns True if file was written."""
     # Build the names string: "1:name1, 2:name2, ..."
     names_str = ", ".join(f"{id}:{name}" for id, name in sorted(names.items()))
     
@@ -213,27 +209,64 @@ def write_names(names: dict[int, str]) -> None:
     }}
 }}
 """
-    # Read current content and compare
+    # Write config only if changed
     try:
         with open(CONFIG_LOC, "r") as f:
             if f.read() == content:
-                return
+                log.debug(f"Config unchanged, skipping write: {names_str}")
+                return False
     except FileNotFoundError:
         pass
-    
+
+    log.debug(f"Writing vdesk names config: {names_str}")
     with open(CONFIG_LOC, "w") as f:
         f.write(content)
-    
-    # Reload workspace names
-    subprocess.run(["hyprctl", "dispatch", "vdeskreset"], capture_output=True)
+    return True
+
+
+
+ACTIVE_VDESK_STATE = "/tmp/rename_workspaces_active_vdesk"
+
+
+def check_and_update_active_vdesk(active_vdesk_id: int | None) -> bool:
+    """Returns True if active vdesk changed since last run."""
+    current = str(active_vdesk_id) if active_vdesk_id is not None else ""
+    try:
+        with open(ACTIVE_VDESK_STATE, "r") as f:
+            previous = f.read().strip()
+    except FileNotFoundError:
+        previous = None
+
+    if previous == current:
+        log.debug(f"Active vdesk unchanged: {current}")
+        return False
+
+    log.debug(f"Active vdesk changed: {previous} -> {current}")
+    with open(ACTIVE_VDESK_STATE, "w") as f:
+        f.write(current)
+    return True
+
+
+def reset_waybar() -> None:
+    """Reload workspace names in waybar via vdeskreset."""
+    import time
+    for i in range(2):
+        result = subprocess.run(["hyprctl", "dispatch", "vdeskreset"], capture_output=True)
+        log.debug(f"vdeskreset exit={result.returncode} stdout={result.stdout.decode().strip()} stderr={result.stderr.decode().strip()}")
+        time.sleep(0.5)
 
 
 def main():
-    global DEBUG
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--debug", action="store_true", help="Print debug logs for status resolution")
     args = parser.parse_args()
-    DEBUG = args.debug
+    logging.basicConfig(
+        level=logging.DEBUG if args.debug else logging.WARNING,
+        format="[%(asctime)s.%(msecs)03d] %(message)s",
+        datefmt="%H:%M:%S",
+        stream=sys.stderr,
+    )
+    log.debug(f"--------------- Start ---------------")
 
     vdesks = get_vdesks()
     clients = get_clients()
@@ -295,10 +328,10 @@ def main():
         # Get statuses for this tmux session
         agent_status, monitor_statuses = get_tmux_session_statuses(name)
         if agent_status:
-            debug(f"vdesk {vdesk_id} tmux {name!r} contributes agent status {agent_status!r}")
+            log.debug(f"vdesk {vdesk_id} tmux {name!r} contributes agent status {agent_status!r}")
             vdesk_statuses.setdefault(vdesk_id, []).append(agent_status)
         for ms in monitor_statuses:
-            debug(f"vdesk {vdesk_id} tmux {name!r} contributes monitor status {ms!r}")
+            log.debug(f"vdesk {vdesk_id} tmux {name!r} contributes monitor status {ms!r}")
             vdesk_statuses.setdefault(vdesk_id, []).append(ms)
 
         agent_icon = AGENT_STATUS_ICONS.get(agent_status, TMUX_ICON)
@@ -418,8 +451,13 @@ def main():
     all_vdesk_ids = {vdesk.get("id") for vdesk in vdesks}
     set_vdesk_statuses(vdesk_statuses, all_vdesk_ids)
 
-    # Write names (only if changed)
-    write_names(renames)
+    # Write names and check active vdesk; reset waybar only if something changed
+    names_changed = write_names(renames)
+    active_changed = check_and_update_active_vdesk(active_vdesk_id)
+    if names_changed or active_changed:
+        reset_waybar()
+    else:
+        log.debug("No changes, skipping reset_waybar")
 
 
 if __name__ == "__main__":
